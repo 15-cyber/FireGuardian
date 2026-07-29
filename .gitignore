@@ -48,3 +48,6 @@ datasets/*.jpg
 datasets/*.png
 datasets/*.txt
 datasets/*.json
+
+# --- Word 临时文件 ---
+~$*.docx
