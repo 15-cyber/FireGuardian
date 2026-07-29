@@ -58,7 +58,16 @@ video_detect:
 
 # ---------- Validation Simulator 配置 (M5) ----------
 simulator:
-  interval: 0.5                 # 帧间隔（秒）
+  dataset_path: "F:/火焰数据集/Dataset/valid/images"
+  interval_seconds: 0.5           # 帧间隔（秒），对应 2 FPS
+  mode: "sequential"              # 播放模式: sequential / random
+  loop: false                     # 是否循环播放
+  max_frames: null                # 最大处理帧数（null=无限制）
+  supported_extensions:
+    - ".jpg"
+    - ".jpeg"
+    - ".png"
+    - ".bmp"
   output_dir: runs/simulator
 
 # ---------- Event Aggregator 配置 (M6) ----------
@@ -107,3 +116,4 @@ gui:
   fps_display: true
   gpu_monitor: true
   stylesheet: ""                # 自定义 QSS 样式表（可选）
+

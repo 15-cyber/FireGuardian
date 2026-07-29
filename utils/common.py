@@ -11,7 +11,7 @@ import json
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, Callable, List, Optional
 
 import yaml
 
@@ -56,15 +56,26 @@ class BoundingBox:
 
     @property
     def area(self) -> float:
+        """检测框像素面积"""
         return self.width * self.height
+
+    def area_ratio(self, image_area: float) -> float:
+        """检测框占图片面积的比例"""
+        if image_area <= 0:
+            return 0.0
+        return self.area / image_area
 
 
 @dataclass
 class Detection:
-    """单次检测结果"""
+    """单帧检测结果"""
     bboxes: List[BoundingBox] = field(default_factory=list)
     image_path: str = ""
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: float = 0.0              # 模拟时间戳（秒）
+    wall_time: str = ""                  # 真实运行时间
+    inference_time_ms: float = 0.0       # 推理耗时（毫秒）
+    image_width: int = 0
+    image_height: int = 0
 
     @property
     def fire_boxes(self) -> List[BoundingBox]:
@@ -82,18 +93,83 @@ class Detection:
     def smoke_area(self) -> float:
         return sum(b.area for b in self.smoke_boxes)
 
+    @property
+    def fire_area_ratio(self) -> float:
+        img_area = self.image_width * self.image_height
+        if img_area <= 0:
+            return 0.0
+        return self.fire_area / img_area
+
+    @property
+    def smoke_area_ratio(self) -> float:
+        img_area = self.image_width * self.image_height
+        if img_area <= 0:
+            return 0.0
+        return self.smoke_area / img_area
+
+    @property
+    def has_fire(self) -> bool:
+        return len(self.fire_boxes) > 0
+
+    @property
+    def has_smoke(self) -> bool:
+        return len(self.smoke_boxes) > 0
+
+    @property
+    def max_confidence(self) -> float:
+        return max((b.confidence for b in self.bboxes), default=0.0)
+
+
+@dataclass
+class FrameData:
+    """
+    统一帧数据对象
+    无论来源是 验证集/视频/摄像头/RTSP，都转换成此格式
+    """
+    frame_id: int
+    timestamp: float                     # 模拟时间戳（秒）
+    image: Any = None                    # OpenCV 图像矩阵 (numpy array)
+    image_path: str = ""
+    source_type: str = ""                # "validation_simulator" / "video" / "camera" / "rtsp"
+    source_name: str = ""                # 来源名称（如验证集名、视频文件名）
+
+    def to_dict(self) -> dict:
+        return {
+            "frame_id": self.frame_id,
+            "timestamp": self.timestamp,
+            "image_path": self.image_path,
+            "source_type": self.source_type,
+            "source_name": self.source_name,
+        }
+
+
+@dataclass
+class SimulatorStats:
+    """模拟器运行统计"""
+    total_frames: int = 0
+    processed_frames: int = 0
+    failed_frames: int = 0
+    fire_frames: int = 0
+    smoke_frames: int = 0
+    normal_frames: int = 0
+    avg_inference_time_ms: float = 0.0
+    total_simulated_duration: float = 0.0
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
 
 @dataclass
 class FireEvent:
     """聚合后的火灾事件（M6 → M7 的接口数据）"""
     event_id: str = ""
     timestamp: datetime = field(default_factory=datetime.now)
-    source: str = ""                # image / video / simulator
+    source: str = ""
     detections: List[Detection] = field(default_factory=list)
     fire_area: float = 0.0
     smoke_area: float = 0.0
-    duration: float = 0.0           # 持续时间（秒）
-    growth_rate: float = 0.0        # 火势增长率
+    duration: float = 0.0
+    growth_rate: float = 0.0
     confidence: float = 0.0
 
     def to_dict(self) -> dict:
@@ -113,7 +189,7 @@ class FireEvent:
 @dataclass
 class AgentDecision:
     """Agent 决策结果（M7 的输出）"""
-    danger_level: str = "low"       # low / medium / high
+    danger_level: str = "low"
     reason: str = ""
     suggestion: str = ""
     analysis_text: str = ""
@@ -142,20 +218,36 @@ if __name__ == "__main__":
     print("FireGuardian 共享工具模块 - 自检测试")
     print("=" * 50)
 
-    # 测试配置加载
     cfg = load_config()
-    print(f"\n✅ 配置加载成功，项目名称: {cfg['project']['name']}")
+    proj_name = cfg["project"]["name"]
+    print(f"\nConfig OK | {proj_name}")
 
-    # 测试数据类
-    box = BoundingBox(x1=10, y1=20, x2=100, y2=200, confidence=0.85, class_id=0, class_name="fire")
-    detection = Detection(bboxes=[box], image_path="test.jpg")
-    print(f"✅ 检测结果: {len(detection.bboxes)} 个目标, 火焰面积: {detection.fire_area:.1f}")
+    # BoundingBox
+    box = BoundingBox(10, 20, 100, 200, 0.85, 0, "fire")
+    print(f"BoundingBox OK | area={box.area:.0f}, area_ratio={box.area_ratio(640*480):.4f}")
 
-    event = FireEvent(event_id="EVT-001", source="test", fire_area=0.3, smoke_area=0.1, duration=8.0)
-    print(f"✅ 火灾事件: {event.event_id}, 危险评估输入已就绪")
+    # Detection
+    det = Detection(bboxes=[box], image_path="test.jpg", timestamp=1.0, inference_time_ms=18.5,
+                    image_width=640, image_height=480)
+    print(f"Detection OK | fire={det.has_fire}, w/h={det.image_width}x{det.image_height}")
 
-    decision = AgentDecision(danger_level="high", reason="连续检测8秒且火势扩大", suggestion="立即检查现场")
-    print(f"✅ Agent决策: 等级={decision.danger_level}")
+    # FrameData（新增）
+    fd = FrameData(frame_id=1, timestamp=0.5, image_path="test.jpg",
+                   source_type="validation_simulator", source_name="valid")
+    print(f"FrameData OK | {fd.source_type} | frame_id={fd.frame_id}")
 
-    print(f"\n📁 项目根目录: {project_root()}")
-    print("\n所有共享组件正常工作 ✅")
+    # SimulatorStats（新增）
+    st = SimulatorStats(total_frames=100, processed_frames=98, fire_frames=30)
+    print(f"SimulatorStats OK | {st.to_dict()}")
+
+    # FireEvent
+    evt = FireEvent(event_id="EVT-001", source="simulator", fire_area=0.3, duration=8.0)
+    print(f"FireEvent OK | {evt.event_id}")
+
+    # AgentDecision
+    dec = AgentDecision(danger_level="high", reason="Fire detected", suggestion="Check")
+    print(f"AgentDecision OK | {dec.danger_level}")
+
+    root = project_root()
+    print(f"\nProject root: {root}")
+    print("\nAll shared components OK")
