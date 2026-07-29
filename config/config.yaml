@@ -72,10 +72,14 @@ simulator:
 
 # ---------- Event Aggregator 配置 (M6) ----------
 aggregator:
-  window_seconds: 5             # 事件聚合时间窗口
-  min_detections: 2             # 最少检测次数才算有效事件
-  fire_area_threshold: 0.05     # 火焰面积占比阈值
-  smoke_area_threshold: 0.1     # 烟雾面积占比阈值
+  min_positive_frames: 3            # 最少阳性帧数才能确认事件
+  confirmation_window: 5            # 确认窗口（帧数）
+  max_negative_frames: 3            # 最多连续阴性帧后结束事件
+  fire_confidence_threshold: 0.50   # 火焰置信度阈值
+  smoke_confidence_threshold: 0.50  # 烟雾置信度阈值
+  min_fire_area_ratio: 0.002        # 最小火焰面积占比
+  min_smoke_area_ratio: 0.003       # 最小烟雾面积占比
+  growth_threshold: 0.01            # 增长趋势变化阈值
 
 # ---------- Fire Decision Agent 配置 (M7) ----------
 agent:
