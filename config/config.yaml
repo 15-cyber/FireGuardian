@@ -88,6 +88,18 @@ agent:
     smoke_area: 0.3
     duration: 0.2
     growth: 0.1
+  thresholds:
+    low_max_score: 0.3
+    medium_max_score: 0.6
+    fire_area_warning: 0.05
+    smoke_area_warning: 0.08
+    duration_warning: 3.0          # 秒
+    duration_alert: 10.0           # 秒
+  llm:
+    enabled: false                 # 第一版用规则引擎
+    api_key: ''
+    model: 'gpt-4o-mini'
+    prompt_template: 
 
 # ---------- 自动截图配置 (M8) ----------
 screenshot:
