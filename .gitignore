@@ -1,0 +1,50 @@
+﻿# ========================
+# FireGuardian .gitignore
+# ========================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.Python
+
+# --- 虚拟环境 ---
+.venv/
+venv/
+env/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- YOLO 模型权重（体积大，不提交） ---
+*.pt
+!models/*.md          # 保留 models 目录的说明文件
+
+# --- 数据集（外部路径，不提交） ---
+# datasets/ (handled below)
+
+# --- 训练输出 ---
+runs/
+train/exp*/
+
+# --- 日志和截图（运行时生成，不提交） ---
+logs/*.log
+screenshots/
+reports/*.pdf
+reports/*.md
+
+# --- 系统文件 ---
+Thumbs.db
+.DS_Store
+
+# --- 数据集目录（只忽略图片/标签，保留 yaml 配置） ---
+datasets/*.jpg
+datasets/*.png
+datasets/*.txt
+datasets/*.json

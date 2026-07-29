@@ -1,0 +1,109 @@
+﻿# ============================================================
+# FireGuardian 全局配置文件
+# 所有模块参数统一在此管理
+# ============================================================
+
+project:
+  name: FireGuardian
+  version: 1.0.0
+
+# ---------- 模型配置 ----------
+model:
+  path: models/best.pt          # 默认模型路径（训练完成后自动更新）
+  confidence: 0.5               # 检测置信度阈值
+  iou: 0.45                     # NMS IoU 阈值
+  device: 0                     # GPU 设备号（-1 表示 CPU）
+  classes: [0, 1]               # 类别ID: 0=fire, 1=smoke
+
+# ---------- 数据集配置 ----------
+dataset:
+  path: F:\火焰数据集\Dataset
+  train_dir: train
+  valid_dir: valid
+  test_dir: test
+  class_names:
+    0: fire
+    1: smoke
+
+# ---------- YOLO 训练配置 (M2) ----------
+train:
+  epochs: 100
+  batch: 16
+  imgsz: 640
+  lr: 0.01
+  patience: 20                  # Early stopping 等待轮次
+  project: train
+  name: exp
+  exist_ok: true
+  pretrained: true
+  workers: 4
+
+# ---------- 图片检测配置 (M3) ----------
+detect:
+  image_extensions:
+    - .jpg
+    - .png
+    - .bmp
+    - .jpeg
+  output_dir: runs/detect
+
+# ---------- 视频检测配置 (M4) ----------
+video_detect:
+  extensions:
+    - .mp4
+    - .avi
+    - .mov
+  output_dir: runs/video_detect
+  show_fps: true
+
+# ---------- Validation Simulator 配置 (M5) ----------
+simulator:
+  interval: 0.5                 # 帧间隔（秒）
+  output_dir: runs/simulator
+
+# ---------- Event Aggregator 配置 (M6) ----------
+aggregator:
+  window_seconds: 5             # 事件聚合时间窗口
+  min_detections: 2             # 最少检测次数才算有效事件
+  fire_area_threshold: 0.05     # 火焰面积占比阈值
+  smoke_area_threshold: 0.1     # 烟雾面积占比阈值
+
+# ---------- Fire Decision Agent 配置 (M7) ----------
+agent:
+  weights:
+    fire_area: 0.4
+    smoke_area: 0.3
+    duration: 0.2
+    growth: 0.1
+
+# ---------- 自动截图配置 (M8) ----------
+screenshot:
+  output_dir: screenshots
+  save_original: true           # 保存原图
+  save_annotated: true          # 保存检测标注图
+
+# ---------- 日志配置 (M9) ----------
+log:
+  level: INFO                   # DEBUG / INFO / WARNING / ERROR
+  file: logs/fireguardian.log
+  max_bytes: 10485760           # 10MB 轮转
+  backup_count: 5
+  format: "[{time:YYYY-MM-DD HH:mm:ss.SSS}] <level>{level:^8}</level> | {name} | {message}"
+  colorize: true
+
+# ---------- 报告生成配置 (M10) ----------
+report:
+  output_dir: reports
+  formats:
+    - md
+    - pdf
+
+# ---------- GUI 配置 (M11) ----------
+gui:
+  window_title: FireGuardian - 智能火灾监测系统
+  window_size:
+    width: 1280
+    height: 800
+  fps_display: true
+  gpu_monitor: true
+  stylesheet: ""                # 自定义 QSS 样式表（可选）
