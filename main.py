@@ -1,7 +1,7 @@
-﻿"""
+"""
 ============================================================
 FireGuardian - 智能火灾监测系统
-程序入口（仅负责启动，不超过 500 行）
+程序入口（仅负责启动 GUI，不包含业务逻辑）
 ============================================================
 """
 import sys
@@ -22,12 +22,15 @@ def main():
     log.info("FireGuardian 启动中...")
     log.info("=" * 50)
 
-    # TODO: 后续在此初始化各模块并启动 GUI
-    # from ui.main_window import MainWindow
-    # from PyQt6.QtWidgets import QApplication
+    from PyQt6.QtWidgets import QApplication
+    from ui.main_window import MainWindow
 
-    log.info("FireGuardian 启动完成 ✅")
+    app = QApplication(sys.argv)
+    win = MainWindow()
+    win.show()
+    log.info("FireGuardian GUI 已显示")
+    return app.exec()
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -70,6 +70,17 @@ ErrorCallback = Callable[[int, str, str], None]
 CompleteCallback = Callable[["SimulatorStats"], None]
 
 
+def _cv_read_image(path) -> object:
+    """兼容中文路径的图片读取（np.fromfile + imdecode），失败返回 None"""
+    import cv2
+    import numpy as np
+    try:
+        data = np.fromfile(str(path), dtype=np.uint8)
+        return cv2.imdecode(data, cv2.IMREAD_COLOR)
+    except Exception:
+        return None
+
+
 # ======================== 模拟器类 ========================
 
 class ValidationStreamSimulator:
@@ -348,8 +359,8 @@ class ValidationStreamSimulator:
         """
         import cv2
 
-        # 读取图片
-        img = cv2.imread(str(img_path))
+        # 读取图片（兼容中文路径）
+        img = _cv_read_image(str(img_path))
         if img is None:
             raise ValueError(f"无法读取图片: {img_path}")
         h, w = img.shape[:2]

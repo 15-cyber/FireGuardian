@@ -271,6 +271,88 @@ class VideoDetector:
 
         return result
 
+    def decode(self, video_path: str | Path):
+        """
+        逐帧检测生成器（不写输出视频，供 GUI 实时显示）
+
+        参数:
+            video_path: 视频文件路径
+
+        产出:
+            (frame, detection, frame_idx, total_frames)
+              frame: BGR ndarray（未绘制）
+              detection: Detection（含 bboxes / 面积 / 置信度）
+              frame_idx: 1-based 帧号（含跳帧）
+              total_frames: 视频总帧数
+        """
+        import cv2
+
+        video_path = Path(video_path)
+        if not video_path.exists():
+            raise FileNotFoundError(f"视频不存在: {video_path}")
+        if video_path.suffix.lower() not in _VIDEO_EXTENSIONS:
+            raise ValueError(f"不支持的视频格式: {video_path.suffix}")
+
+        cap = cv2.VideoCapture(str(video_path))
+        if not cap.isOpened():
+            raise RuntimeError(f"无法打开视频: {video_path}")
+
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        frame_idx = 0
+        try:
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                frame_idx += 1
+                # 跳帧
+                if (frame_idx - 1) % self.frame_skip != 0:
+                    continue
+
+                h, w = frame.shape[:2]
+                t0 = time.time()
+                results = self.model(
+                    frame,
+                    conf=self.conf_threshold,
+                    iou=self.iou_threshold,
+                    device=self.device,
+                    verbose=False,
+                )
+                infer_ms = (time.time() - t0) * 1000
+                result_data = results[0]
+
+                bboxes = []
+                boxes_data = result_data.boxes
+                if boxes_data is not None and len(boxes_data) > 0:
+                    xyxy = boxes_data.xyxy.cpu().numpy()
+                    confs = boxes_data.conf.cpu().numpy()
+                    cls_ids = boxes_data.cls.cpu().numpy().astype(int)
+                    for i in range(len(xyxy)):
+                        x1, y1, x2, y2 = xyxy[i]
+                        cid = int(cls_ids[i])
+                        bboxes.append(BoundingBox(
+                            x1=float(x1), y1=float(y1),
+                            x2=float(x2), y2=float(y2),
+                            confidence=float(confs[i]),
+                            class_id=cid,
+                            class_name=self.class_names.get(cid, f"class_{cid}"),
+                        ))
+
+                detection = Detection(
+                    bboxes=bboxes,
+                    image_path=str(video_path),
+                    timestamp=(frame_idx / fps) if fps > 0 else float(frame_idx),
+                    wall_time=time.strftime("%Y-%m-%d %H:%M:%S"),
+                    inference_time_ms=infer_ms,
+                    image_width=w,
+                    image_height=h,
+                    frame_id=frame_idx,
+                )
+                yield frame, detection, frame_idx, total_frames
+        finally:
+            cap.release()
+
     def _get_color(self, class_id: int) -> tuple:
         """根据类别返回检测框颜色"""
         colors = {

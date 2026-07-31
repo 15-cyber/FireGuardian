@@ -196,45 +196,46 @@ M5 Simulator ──→ DetectionResult ──→ M6 Aggregator ──→ FireEve
 - [x] **自测**：完整事件包 + M6 事件驱动两个场景
 
 ---
-## 七、M11 GUI
+## 七、M11 GUI（已完成，2026-07-31）
 
-- [ ] **Worker 线程**
+- [x] **Worker 线程**
   - YOLO 推理在独立线程运行，不阻塞 UI
   - 通过 Signal 更新界面
+  - 暂停/继续/停止：pause_event + running 标志，关闭时 join 等待
 
-- [ ] **左侧菜单**
-  - 图片检测 / 视频检测 / Validation Simulator / 模型训练
+- [x] **左侧菜单**
+  - 图片检测 / 视频检测 / Validation Simulator / 模型训练（独立训练页）
 
-- [ ] **M5 播放控制集成到 GUI**
+- [x] **M5 播放控制集成到 GUI**
   - interval / mode(sequential/random) / loop / max_frames
   - 提供 UI 控件，不要求用户改 YAML
 
-- [ ] **右侧信息区分三区**
+- [x] **右侧信息区分三区**
   - 当前帧检测: 类别 / 置信度 / 火焰面积 / 烟雾面积 / 推理耗时
   - 当前事件: 事件编号 / 状态 / 持续时间 / 增长趋势 / 危险等级
   - Agent 决策: 原因 / 建议 / 决策来源 / 更新时间
 
-- [ ] **事件历史列表**
+- [x] **事件历史列表**
   - 表格: 事件编号 / 开始时间 / 持续时间 / 最高危险等级 / 报告状态 / 查看报告
 
-- [ ] **日志限长**
+- [x] **日志限长**
   - max_log_lines: 1000 条
   - 完整日志仍写入文件
 
-- [ ] **训练页面（第一版简化）**
+- [x] **训练页面（第一版简化）**
   - 选择数据集 YAML / 选择权重 / epochs / imgsz / batch / device
   - 开始/停止按钮
   - 显示关键训练日志
   - 打开训练结果目录
   - 不做实时曲线
 
-- [ ] **安全释放资源**
+- [x] **安全释放资源**
   - 关闭时: 停止工作线程 → 等待推理完成 → 释放视频/文件 → 退出
   - 防止输出视频损坏 / 报告写一半 / GPU 未释放
 
-- [ ] **GUI 不含业务逻辑**
+- [x] **GUI 不含业务逻辑**
   - 只负责: 接收用户操作 → 调用控制器 → 显示结果
-  - 业务逻辑在: detector / simulator / aggregator / agent / report
+  - 业务逻辑在: detector / simulator / aggregator / agent / report / UiController
 
 ---
 

@@ -42,10 +42,18 @@ _MODEL_TARGET_DIR = _ROOT / "models"
 
 # ======================== 训练器类 ========================
 
+class TrainingStopped(Exception):
+    """用户请求停止训练时抛出（在 epoch 回调边界安全退出，由 GUI 捕获）"""
+
+
 class YOLOTrainer:
     """YOLO 训练器，封装训练全流程"""
 
-    def __init__(self, config_path: Optional[str | Path] = None):
+    def __init__(self, config_path: Optional[str | Path] = None,
+                 weights: Optional[str | Path] = None,
+                 project: Optional[str] = None,
+                 name: Optional[str] = None,
+                 dataset_yaml: Optional[str | Path] = None):
         self.cfg = load_config() if config_path is None else load_config(reload=True)
         self.train_cfg = self.cfg.get("train", {})
         self.model_cfg = self.cfg.get("model", {})
@@ -58,8 +66,11 @@ class YOLOTrainer:
         self.patience = self.train_cfg.get("patience", 20)
         self.workers = self.train_cfg.get("workers", 4)
         self.pretrained = self.train_cfg.get("pretrained", True)
-        self.project = self.train_cfg.get("project", "train")
-        self.exp_name = self.train_cfg.get("name", "exp")
+        # 可覆盖参数（GUI 传入，None 则使用配置）
+        self.weights = Path(weights) if weights else _MODEL_SOURCE
+        self.project = project if project else self.train_cfg.get("project", "train")
+        self.exp_name = name if name else self.train_cfg.get("name", "exp")
+        self._stop_requested = False
         self.device = self.model_cfg.get("device", 0)
         self.exist_ok = self.train_cfg.get("exist_ok", True)
 
@@ -78,28 +89,36 @@ class YOLOTrainer:
 
         # 模型和数据集
         self.model: Optional[YOLO] = None
-        self.dataset_yaml = str(_DATASET_YAML)
+        self.dataset_yaml = str(Path(dataset_yaml) if dataset_yaml else _DATASET_YAML)
         self._validate_paths()
 
     def _validate_paths(self):
         """验证模型和数据集配置是否存在"""
-        if not _DATASET_YAML.exists():
+        if not Path(self.dataset_yaml).exists():
             raise FileNotFoundError(
-                f"数据集配置文件不存在: {_DATASET_YAML}\n"
+                f"数据集配置文件不存在: {self.dataset_yaml}\n"
                 f"请确保已创建 datasets/fire.yaml"
             )
-        if self.pretrained and not _MODEL_SOURCE.exists():
+        if self.pretrained and not self.weights.exists():
             raise FileNotFoundError(
-                f"预训练模型不存在: {_MODEL_SOURCE}\n"
+                f"预训练模型不存在: {self.weights}\n"
                 f"请先下载 yolo11n.pt"
             )
 
-    def _setup_callbacks(self):
-        """注册训练回调，实时显示指标"""
+    def _setup_callbacks(self, callback=None):
+        """
+        注册训练回调，实时显示指标
+
+        参数:
+            callback: 可选 callable(dict)，每 epoch / 结束时收到指标与状态
+        """
+        self._train_callback = callback
         from ultralytics.utils.callbacks import add_integration_callbacks
 
         def on_train_epoch_end(trainer):
-            """每个 epoch 结束时记录指标"""
+            """每个 epoch 结束时记录指标（含停止请求检查）"""
+            if self._stop_requested:
+                raise TrainingStopped("用户请求停止训练")
             self._current_epoch = trainer.epoch
 
             # 收集当前指标
@@ -136,6 +155,21 @@ class YOLOTrainer:
                     f"ETA: {eta:.0f}s"
                 )
 
+                # 转发给 GUI / 外部监听
+                if self._train_callback:
+                    self._train_callback({
+                        "kind": "epoch",
+                        "epoch": int(trainer.epoch),
+                        "epochs": int(self.epochs),
+                        "loss": round(float(loss_val), 4),
+                        "precision": round(float(p), 4),
+                        "recall": round(float(r), 4),
+                        "mAP50": round(float(map50), 4),
+                        "mAP50-95": round(float(map95), 4),
+                        "best_map": round(float(self._best_map), 4),
+                        "eta_s": round(float(eta), 1),
+                    })
+
         def on_train_end(trainer):
             """训练结束时打印总结"""
             total = time.time() - self._train_start_time
@@ -146,56 +180,100 @@ class YOLOTrainer:
             print(f"  最后模型: {trainer.last}")
             print(f"  {'=' * 50}")
 
+            # 转发给 GUI / 外部监听
+            if self._train_callback:
+                self._train_callback({
+                    "kind": "done",
+                    "best_map": round(float(self._best_map), 4),
+                    "best": str(trainer.best),
+                    "last": str(trainer.last),
+                    "total_seconds": round(float(total), 1),
+                })
+
         # 注册回调
         YOLO.add_callback("on_train_epoch_end", on_train_epoch_end)
         YOLO.add_callback("on_train_end", on_train_end)
 
-    def train(self) -> Path:
+    def train(self,
+              epochs: Optional[int] = None,
+              batch: Optional[int] = None,
+              imgsz: Optional[int] = None,
+              device: Optional[str | int] = None,
+              weights: Optional[str | Path] = None,
+              project: Optional[str] = None,
+              name: Optional[str] = None,
+              dataset_yaml: Optional[str | Path] = None,
+              callback: Optional[callable] = None) -> Path:
         """
-        执行训练
+        执行训练（参数 None 时使用实例/配置默认值）
+
+        参数:
+            epochs/batch/imgsz/device: 训练参数覆盖
+            weights: 预训练权重覆盖
+            project/name: 输出目录覆盖
+            callback: 每 epoch / 训练结束回调 callable(dict)
 
         返回:
             best_model_path: 最佳模型路径
         """
+        # 参数覆盖（None → 实例默认值）
+        epochs = epochs if epochs is not None else self.epochs
+        batch = batch if batch is not None else self.batch
+        imgsz = imgsz if imgsz is not None else self.imgsz
+        device = device if device is not None else self.device
+        weights = Path(weights) if weights else self.weights
+        project = project if project else self.project
+        exp_name = name if name else self.exp_name
+        dataset_yaml = str(Path(dataset_yaml) if dataset_yaml else self.dataset_yaml)
+        self._stop_requested = False
+
         print(f"\n  {'=' * 50}")
         print(f"  FireGuardian M2 - YOLO 训练")
         print(f"  {'=' * 50}")
-        print(f"  模型: {_MODEL_SOURCE}")
+        print(f"  模型: {weights}")
         print(f"  数据集: {self.dataset_yaml}")
-        print(f"  配置: {self.epochs} epochs, batch={self.batch}, imgsz={self.imgsz}")
-        print(f"  Device: {self.device}")
+        print(f"  配置: {epochs} epochs, batch={batch}, imgsz={imgsz}")
+        print(f"  Device: {device}")
         print(f"  {'=' * 50}\n")
 
         # 加载模型
-        model_path = str(_MODEL_SOURCE)
+        model_path = str(weights)
         self.model = YOLO(model_path)
 
         # 设置回调
-        self._setup_callbacks()
+        self._setup_callbacks(callback)
 
         # 开始计时
         self._train_start_time = time.time()
 
         # 执行训练
         results = self.model.train(
-            data=self.dataset_yaml,
-            epochs=self.epochs,
-            batch=self.batch,
-            imgsz=self.imgsz,
+            data=dataset_yaml,
+            epochs=epochs,
+            batch=batch,
+            imgsz=imgsz,
             lr0=self.lr,
             patience=self.patience,
-            device=self.device,
+            device=device,
             workers=self.workers,
-            project=self.project,
-            name=self.exp_name,
+            project=project,
+            name=exp_name,
             exist_ok=self.exist_ok,
             pretrained=self.pretrained,
             amp=True,
             verbose=False,
         )
 
+        # 同步实例参数（供 plot_metrics / 复制模型使用）
+        self.project = project
+        self.exp_name = exp_name
+        self.epochs = epochs
+        self.batch = batch
+        self.imgsz = imgsz
+        self.device = device
+
         # 复制最佳模型到 models/best.pt
-        best_source = _ROOT / self.project / self.exp_name / "weights" / "best.pt"
+        best_source = _ROOT / project / exp_name / "weights" / "best.pt"
         ensure_dir(str(_MODEL_TARGET_DIR))
         best_target = _MODEL_TARGET_DIR / "best.pt"
 
@@ -207,6 +285,10 @@ class YOLOTrainer:
             print(f"\n  ⚠ 未找到最佳模型: {best_source}")
 
         return best_target
+
+    def request_stop(self):
+        """请求停止训练（下一个 epoch 边界生效）"""
+        self._stop_requested = True
 
     def plot_metrics(self, save_path: Optional[str | Path] = None):
         """绘制训练指标曲线图"""
