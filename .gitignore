@@ -40,6 +40,8 @@ logs/*.json
 screenshots/
 reports/*.pdf
 reports/*.md
+reports/*.json
+reports/event_*/
 
 # --- 系统文件 ---
 Thumbs.db

@@ -298,6 +298,16 @@ class FireDecision:
 
 
 @dataclass
+class EventReportData:
+    """M10 报告输入包：所有数据显式传入，报告生成器不自行查目录"""
+    event: FireEvent
+    decisions: List[FireDecision] = field(default_factory=list)
+    screenshots: List[ScreenshotRecord] = field(default_factory=list)
+    system_info: dict = field(default_factory=dict)
+    model_info: dict = field(default_factory=dict)
+
+
+@dataclass
 class ScreenshotRecord:
     """M8 截图记录（统一结构化对象，供 M10 报告使用）"""
     event_id: str = ""

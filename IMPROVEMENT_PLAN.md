@@ -162,24 +162,31 @@ M5 Simulator ──→ DetectionResult ──→ M6 Aggregator ──→ FireEve
 
 ---
 
-## 六、M10 报告生成
+## 六、M10 报告生成（已完成）
 
-- [ ] **事件驱动**
-  - M7 on_analysis_complete → M10 生成报告
+- [x] **事件驱动**
+  - attach_event_report 挂接 M6 on_event_ended 自动生成
+  - 支持 screenshot_provider / decision_provider 注入
 
-- [ ] **三种输出格式**
+- [x] **输入完整事件包**
+  - utils/common.py 新增 EventReportData（event + decisions + screenshots + system/model info）
+  - 报告生成器不自行查目录
+
+- [x] **三种输出格式（reports/event_<id>/）**
   - report.md - 人类可读
-  - report.pdf - 正式文档
-  - event.json - 机器可读
+  - report.pdf - 正式文档（中文，需字体）
+  - event.json - 机器可读（原子写入）
+  - images/ - 截图副本
 
-- [ ] **报告内容**
-  - 事件编号 / 检测时间 / 检测来源
-  - 检测类别 / 置信度 / 持续时间
-  - 火焰面积 / 烟雾面积 / 危险等级
-  - Agent 分析 / 应急建议 / 检测截图
+- [x] **报告内容**
+  - 基本信息 / 检测统计 / 事件时间线 / Agent 分析 / 图片证据 / 免责声明
+
+- [x] **中文 PDF 字体处理**
+  - pdf_font 配置 + 自动检测；不可用时只生成 md+json 并提示，不崩溃
+
+- [x] **自测**：完整事件包 + M6 事件驱动两个场景
 
 ---
-
 ## 七、M11 GUI
 
 - [ ] **Worker 线程**
