@@ -63,6 +63,10 @@ class UiController(QObject):
     # ---- 训练页信号 ----
     train_log_ready = pyqtSignal(str)
     train_finished = pyqtSignal(object)
+    train_epoch_ready = pyqtSignal(object)   # 训练逐 epoch 指标（Epoch/Loss/mAP/ETA）
+
+    # ---- 全局 ----
+    error_ready = pyqtSignal(str)            # 错误提示（GUI 弹窗）
 
     def __init__(self, parent: Optional[QObject] = None):
         super().__init__(parent)
@@ -95,6 +99,7 @@ class UiController(QObject):
         self._last_frame_id = 0
         self._total_frames = 0
         self._fps = 0.0
+        self._last_infer_ms = 0.0
         self._params: dict = {}
 
         # 训练状态
@@ -323,6 +328,7 @@ class UiController(QObject):
             self.log.error(f"检测线程异常: {e}")
             import traceback
             traceback.print_exc()
+            self.error_ready.emit(f"检测线程异常: {e}")
         finally:
             self._running = False
             self._paused = False
@@ -436,6 +442,7 @@ class UiController(QObject):
         """单帧通用处理：绘制 → 发送画面/当前帧信息 → 送入 M6 聚合"""
         annotated = self._draw_detections(img, detection)
         qimg = self._bgr_to_qimage(annotated)
+        self._last_infer_ms = detection.inference_time_ms
 
         self.frame_ready.emit({
             "image": qimg,
@@ -505,6 +512,14 @@ class UiController(QObject):
             return bboxes
 
         return detect_fn
+
+    def _current_model_name(self) -> str:
+        """当前使用的模型文件名（供界面展示）"""
+        det = self._image_detector or self._video_detector
+        if det is not None and getattr(det, "model_path", None):
+            return Path(det.model_path).name
+        model_cfg = self.cfg.get("model", {})
+        return Path(str(model_cfg.get("path", "models/best.pt"))).name
 
     # ======================== 画面绘制与转换 ========================
 
@@ -580,7 +595,10 @@ class UiController(QObject):
     def _emit_history(self):
         items = []
         for evt in self.aggregator.event_history:
-            report_path = self.report_gen.path_mgr.report_event_dir(evt.event_id) / "report.md"
+            evt_dir = self.report_gen.path_mgr.report_event_dir(evt.event_id)
+            report_path = evt_dir / "report.pdf"
+            if not report_path.exists():
+                report_path = evt_dir / "report.md"
             exists = report_path.exists()
             if exists:
                 status = "已生成"
@@ -609,6 +627,8 @@ class UiController(QObject):
             "frame_id": self._last_frame_id,
             "total_frames": self._total_frames,
             "fps": round(self._fps, 1),
+            "inference_ms": round(self._last_infer_ms, 1),
+            "model": self._current_model_name(),
             "events_confirmed": self.aggregator.get_stats().get("total_events_confirmed", 0),
             "events_ended": self.aggregator.get_stats().get("total_events_ended", 0),
         }
@@ -643,6 +663,41 @@ class UiController(QObject):
         except Exception:
             return 0
 
+    def reports_dir(self) -> str:
+        """报告根目录（GUI「打开报告目录」按钮）"""
+        return str(self.report_gen.path_mgr.reports_dir())
+
+    @staticmethod
+    def system_info() -> dict:
+        """采集系统/环境信息（GUI 右下角展示）"""
+        info = {
+            "python": sys.version.split()[0],
+            "torch": "-",
+            "cuda": "不可用",
+            "gpu": "-",
+            "cv2": "-",
+            "ultralytics": "-",
+        }
+        try:
+            import torch
+            info["torch"] = torch.__version__
+            if torch.cuda.is_available():
+                info["cuda"] = "可用"
+                info["gpu"] = torch.cuda.get_device_name(0)
+        except Exception:
+            pass
+        try:
+            import cv2
+            info["cv2"] = cv2.__version__
+        except Exception:
+            pass
+        try:
+            import ultralytics
+            info["ultralytics"] = ultralytics.__version__
+        except Exception:
+            pass
+        return info
+
     # ======================== 训练（M2）====================
 
     def start_training(self, weights: str, dataset_yaml: str, epochs: int,
@@ -670,6 +725,7 @@ class UiController(QObject):
     def _train_worker(self, trainer, epochs: int, batch: int, imgsz: int, device: str):
         def callback(info: dict):
             if info.get("kind") == "epoch":
+                self.train_epoch_ready.emit(info)
                 line = (f"[Epoch {info['epoch']:>3}/{info['epochs']}] "
                         f"loss={info['loss']:.4f} P={info['precision']:.4f} "
                         f"R={info['recall']:.4f} mAP50={info['mAP50']:.4f} "

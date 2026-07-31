@@ -237,6 +237,16 @@ M5 Simulator ──→ DetectionResult ──→ M6 Aggregator ──→ FireEve
   - 只负责: 接收用户操作 → 调用控制器 → 显示结果
   - 业务逻辑在: detector / simulator / aggregator / agent / report / UiController
 
+- [x] **按 M11 核查文档完善（2026-07-31）**
+  - 状态指示灯（Ready 绿 / Running 蓝 / Warning 橙 / Error 红）
+  - 状态栏显示 FPS / 推理耗时 / 当前模型；右下角系统环境信息（GPU/CUDA/Torch/OpenCV）
+  - 事件历史双击打开报告（优先 report.pdf）；新增「打开报告目录」按钮
+  - 训练页实时显示 Epoch / Loss / mAP50 / ETA / Device
+  - 日志页级别过滤（INFO / WARNING / ERROR）
+  - 危险等级颜色全局统一（High 红 / Medium 橙 / Low 绿）
+  - 程序异常 → 状态灯 + 错误弹窗
+  - 最近路径记忆（QSettings：图片/视频/模拟器目录/权重/数据集）
+
 ---
 
 ## 八、接口契约总表

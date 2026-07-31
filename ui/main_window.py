@@ -25,8 +25,8 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 os.environ.setdefault("YOLO_CONFIG_DIR", str(_ROOT / ".venv"))
 
-from PyQt6.QtCore import Qt, QTimer, QUrl
-from PyQt6.QtGui import QDesktopServices, QPixmap
+from PyQt6.QtCore import Qt, QTimer, QUrl, QSettings
+from PyQt6.QtGui import QDesktopServices, QPixmap, QColor, QBrush
 from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -74,13 +74,16 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.controller = controller or UiController(self)
         self.cfg = load_config()
+        self._settings = QSettings("FireGuardian", "FireGuardian")
         self._last_qimage = None
         self._last_log_tail: list = []
         self._history_report_paths: dict = {}
+        self._error_state = False
 
         self._build_ui()
         self._connect_signals()
         self._apply_defaults()
+        self._apply_recent_paths()
 
         gui_cfg = self.cfg.get("gui", {})
         self.setWindowTitle(gui_cfg.get("window_title", "FireGuardian - 智能火灾监测系统"))
@@ -219,6 +222,18 @@ class MainWindow(QMainWindow):
         table.setSelectionMode(QTableWidget.SelectionMode.NoSelection)
         return table
 
+    @staticmethod
+    def _level_color(level) -> str:
+        """危险等级 → 统一颜色（High 红 / Medium 橙 / Low 绿）"""
+        lv = str(level or "").strip().lower()
+        if lv in ("high", "高"):
+            return "#e74c3c"
+        if lv in ("medium", "中"):
+            return "#f39c12"
+        if lv in ("low", "低"):
+            return "#2ecc71"
+        return "#666666"
+
     def _build_frame_tab(self) -> QWidget:
         self.frame_table = self._make_kv_table(0)
         return self.frame_table
@@ -230,10 +245,14 @@ class MainWindow(QMainWindow):
     def _build_decision_tab(self) -> QWidget:
         page = QWidget()
         lay = QVBoxLayout(page)
+        self.decision_level_label = QLabel("危险等级: -")
+        self.decision_level_label.setStyleSheet(
+            "font-size: 15px; font-weight: bold; color: #666666;")
         self.decision_text = QPlainTextEdit()
         self.decision_text.setReadOnly(True)
         self.decision_meta = QLabel("来源: - | 更新: -")
         self.decision_meta.setStyleSheet("color: #666;")
+        lay.addWidget(self.decision_level_label)
         lay.addWidget(self.decision_text, 1)
         lay.addWidget(self.decision_meta)
         return page
@@ -252,8 +271,11 @@ class MainWindow(QMainWindow):
         self.history_table.doubleClicked.connect(self._on_history_double_click)
         self.view_report_btn = QPushButton("查看报告")
         self.view_report_btn.clicked.connect(self._on_view_report)
+        self.open_reports_btn = QPushButton("打开报告目录")
+        self.open_reports_btn.clicked.connect(self._on_open_reports_dir)
         btn_row = QHBoxLayout()
         btn_row.addStretch(1)
+        btn_row.addWidget(self.open_reports_btn)
         btn_row.addWidget(self.view_report_btn)
         lay.addWidget(self.history_table)
         lay.addLayout(btn_row)
@@ -263,14 +285,47 @@ class MainWindow(QMainWindow):
         bar = QWidget()
         lay = QHBoxLayout(bar)
         lay.setContentsMargins(0, 0, 0, 0)
+        self.status_light = QLabel("●")
+        self._set_status_light("ready")
+        self.status_label = QLabel("就绪")
+        self.fps_label = QLabel("FPS: -")
+        self.infer_label = QLabel("推理: -")
+        self.model_label = QLabel("模型: -")
+        self.sysinfo_label = QLabel("GPU: - | CUDA: - | Torch: - | CV: -")
+        self.sysinfo_label.setStyleSheet("color: #666;")
+        self.sysinfo_label.setToolTip("系统环境信息")
         self.progress = QProgressBar()
         self.progress.setRange(0, 100)
         self.progress.setValue(0)
-        self.progress.setFixedWidth(220)
-        self.status_label = QLabel("就绪")
+        self.progress.setFixedWidth(200)
+        lay.addWidget(self.status_light)
         lay.addWidget(self.status_label, 1)
+        lay.addWidget(self.fps_label)
+        lay.addWidget(self.infer_label)
+        lay.addWidget(self.model_label)
+        lay.addWidget(self.sysinfo_label)
         lay.addWidget(self.progress)
         return bar
+
+    def _set_status_light(self, state: str):
+        """状态指示灯：Ready 绿 / Running 蓝 / Warning 橙 / Error 红"""
+        colors = {
+            "ready": "#2ecc71",
+            "running": "#3498db",
+            "warning": "#f39c12",
+            "error": "#e74c3c",
+        }
+        tips = {
+            "ready": "就绪",
+            "running": "运行中",
+            "warning": "警告/暂停",
+            "error": "错误",
+        }
+        if not hasattr(self, "status_light"):
+            return
+        self.status_light.setStyleSheet(
+            f"color: {colors.get(state, '#2ecc71')}; font-size: 20px;")
+        self.status_light.setToolTip(tips.get(state, "就绪"))
 
     def _build_train_tab(self) -> QWidget:
         page = QWidget()
@@ -337,15 +392,42 @@ class MainWindow(QMainWindow):
         btn_row.addStretch(1)
         root.addLayout(btn_row)
 
+        status_row = QHBoxLayout()
+        self.train_epoch_label = QLabel("Epoch: -")
+        self.train_loss_label = QLabel("Loss: -")
+        self.train_map_label = QLabel("mAP50: -")
+        self.train_eta_label = QLabel("ETA: -")
+        self.train_device_label = QLabel("Device: -")
+        for lbl in (self.train_epoch_label, self.train_loss_label,
+                    self.train_map_label, self.train_eta_label, self.train_device_label):
+            lbl.setStyleSheet("font-weight: bold;")
+            status_row.addWidget(lbl)
+        status_row.addStretch(1)
+        root.addLayout(status_row)
+
         self.train_log = QPlainTextEdit()
         self.train_log.setReadOnly(True)
         root.addWidget(self.train_log, 1)
         return page
 
     def _build_log_tab(self) -> QWidget:
+        page = QWidget()
+        lay = QVBoxLayout(page)
         self.log_view = QPlainTextEdit()
         self.log_view.setReadOnly(True)
-        return self.log_view
+        filter_row = QHBoxLayout()
+        filter_row.addWidget(QLabel("级别过滤:"))
+        self.log_filter_info = QCheckBox("INFO")
+        self.log_filter_warning = QCheckBox("WARNING")
+        self.log_filter_error = QCheckBox("ERROR")
+        for cb in (self.log_filter_info, self.log_filter_warning, self.log_filter_error):
+            cb.setChecked(True)
+            cb.toggled.connect(self._apply_log_filter)
+            filter_row.addWidget(cb)
+        filter_row.addStretch(1)
+        lay.addLayout(filter_row)
+        lay.addWidget(self.log_view, 1)
+        return page
 
     @staticmethod
     def _find_weights() -> list:
@@ -375,6 +457,8 @@ class MainWindow(QMainWindow):
         c.source_finished.connect(self._on_source_finished)
         c.train_log_ready.connect(self._on_train_log)
         c.train_finished.connect(self._on_train_finished)
+        c.train_epoch_ready.connect(self._on_train_epoch)
+        c.error_ready.connect(self._on_error)
 
         self.source_combo.currentIndexChanged.connect(self._on_source_changed)
         self.open_btn.clicked.connect(self._on_open)
@@ -400,6 +484,28 @@ class MainWindow(QMainWindow):
             self.path_edit.setText(str(_ROOT / "bus.jpg"))
         elif (_ROOT / "me.mp4").exists():
             self.path_edit.setText(str(_ROOT / "me.mp4"))
+        # 系统环境信息（右下角）
+        info = self.controller.system_info()
+        self.sysinfo_label.setText(
+            f"GPU: {info['gpu']} | CUDA: {info['cuda']} | Torch: {info['torch']} | CV: {info['cv2']}")
+        self.sysinfo_label.setToolTip(
+            f"Python {info['python']} | Ultralytics {info['ultralytics']} | OpenCV {info['cv2']}")
+
+    def _apply_recent_paths(self):
+        """最近使用的路径（QSettings），启动时自动回填"""
+        image = self._settings.value("recent/image", "")
+        video = self._settings.value("recent/video", "")
+        weights = self._settings.value("recent/weights", "")
+        dataset = self._settings.value("recent/dataset", "")
+        kind = self.source_combo.currentData()
+        if kind == "image" and image and Path(image).exists():
+            self.path_edit.setText(image)
+        elif kind == "video" and video and Path(video).exists():
+            self.path_edit.setText(video)
+        if weights:
+            self.weights_combo.setCurrentText(weights)
+        if dataset and Path(dataset).exists():
+            self.dataset_edit.setText(dataset)
 
     # ======================== 监控页信号处理 ========================
 
@@ -463,12 +569,18 @@ class MainWindow(QMainWindow):
         table.setRowCount(len(rows))
         for i, (k, v) in enumerate(rows):
             table.setItem(i, 0, QTableWidgetItem(k))
-            table.setItem(i, 1, QTableWidgetItem(v))
+            item = QTableWidgetItem(v)
+            if k == "危险等级":
+                item.setForeground(QBrush(QColor(self._level_color(v))))
+            table.setItem(i, 1, item)
 
     def _on_decision_ready(self, payload):
         if not payload:
             self.decision_text.setPlainText("")
             self.decision_meta.setText("来源: - | 更新: -")
+            self.decision_level_label.setText("危险等级: -")
+            self.decision_level_label.setStyleSheet(
+                "font-size: 15px; font-weight: bold; color: #666666;")
             return
         reasons = "\n".join(f"- {r}" for r in payload.get("reasons", [])) or "无"
         suggestions = "\n".join(f"- {s}" for s in payload.get("suggestions", [])) or "无"
@@ -479,6 +591,10 @@ class MainWindow(QMainWindow):
         if payload.get("summary"):
             text += f"\n\n摘要: {payload['summary']}"
         self.decision_text.setPlainText(text)
+        level = payload.get("danger_level", "-")
+        self.decision_level_label.setText(f"危险等级: {level}")
+        self.decision_level_label.setStyleSheet(
+            f"font-size: 15px; font-weight: bold; color: {self._level_color(level)};")
         self.decision_meta.setText(
             f"来源: {payload.get('decision_source', '-')} | 更新: {payload.get('generated_at', '-')}")
 
@@ -490,7 +606,9 @@ class MainWindow(QMainWindow):
             table.setItem(row, 0, QTableWidgetItem(item.get("event_id", "")))
             table.setItem(row, 1, QTableWidgetItem(item.get("start_time", "")))
             table.setItem(row, 2, QTableWidgetItem(str(item.get("duration", ""))))
-            table.setItem(row, 3, QTableWidgetItem(str(item.get("max_danger", "-"))))
+            danger_item = QTableWidgetItem(str(item.get("max_danger", "-")))
+            danger_item.setForeground(QBrush(QColor(self._level_color(item.get("max_danger")))))
+            table.setItem(row, 3, danger_item)
             table.setItem(row, 4, QTableWidgetItem(item.get("report_status", "")))
             self._history_report_paths[row] = item.get("report_path", "")
 
@@ -502,11 +620,28 @@ class MainWindow(QMainWindow):
             self.progress.setValue(int(min(frame / total * 100, 100)))
         else:
             self.progress.setValue(0)
-        state = "运行中" if payload.get("running") else ("已暂停" if payload.get("paused") else "就绪")
+        if self._error_state:
+            state = "错误"
+            self._set_status_light("error")
+        elif payload.get("running"):
+            state = "运行中"
+            self._set_status_light("running")
+        elif payload.get("paused"):
+            state = "已暂停"
+            self._set_status_light("warning")
+        else:
+            state = "就绪"
+            self._set_status_light("ready")
         total_txt = total if total else "-"
         self.status_label.setText(
-            f"{state} | 帧 {frame}/{total_txt} | FPS {payload.get('fps', 0)} | "
+            f"{state} | 帧 {frame}/{total_txt} | "
             f"事件 确认{payload.get('events_confirmed', 0)}/结束{payload.get('events_ended', 0)}")
+        self.fps_label.setText(f"FPS: {payload.get('fps', 0)}")
+        infer = payload.get("inference_ms", "-")
+        self.infer_label.setText(f"推理: {infer}ms" if infer != "-" else "推理: -")
+        model = payload.get("model", "-")
+        if model and model != "-":
+            self.model_label.setText(f"模型: {model}")
         self._refresh_buttons()
 
     def _on_source_finished(self, payload):
@@ -529,6 +664,13 @@ class MainWindow(QMainWindow):
         self.source_combo.setEnabled(not running)
         self.sim_group.setEnabled(is_sim and not running)
 
+    def _on_error(self, message: str):
+        """程序异常 → 状态灯 + 弹窗（GUI 异常提示）"""
+        self._error_state = True
+        self._set_status_light("error")
+        self.status_label.setText(f"错误: {message}")
+        QMessageBox.critical(self, "FireGuardian 错误", str(message))
+
     # ======================== 监控页操作 ========================
 
     def _on_source_changed(self):
@@ -548,6 +690,7 @@ class MainWindow(QMainWindow):
             d = QFileDialog.getExistingDirectory(self, "选择验证集图片目录")
             if d:
                 self.path_edit.setText(d)
+                self._settings.setValue("recent/simulator", d)
             return
         if kind == "image":
             f, _ = QFileDialog.getOpenFileName(
@@ -557,8 +700,11 @@ class MainWindow(QMainWindow):
                 self, "选择视频", "", "视频 (*.mp4 *.avi *.mov)")
         if f:
             self.path_edit.setText(f)
+            self._settings.setValue(f"recent/{kind}", f)
 
     def _on_start(self):
+        self._error_state = False
+        self._set_status_light("ready")
         path = self.path_edit.text().strip()
         if not path:
             QMessageBox.warning(self, "提示", "请先选择数据源文件/目录")
@@ -593,12 +739,16 @@ class MainWindow(QMainWindow):
         else:
             QMessageBox.information(self, "提示", "该事件暂无报告")
 
+    def _on_open_reports_dir(self):
+        QDesktopServices.openUrl(QUrl.fromLocalFile(self.controller.reports_dir()))
+
     # ======================== 训练页操作 ========================
 
     def _on_train_start(self):
         weights = self.weights_combo.currentText().strip()
         dataset = self.dataset_edit.text().strip()
         device = self.device_combo.currentText().split(" ")[0]
+        self.train_device_label.setText(f"Device: {device}")
         ok = self.controller.start_training(
             weights=weights,
             dataset_yaml=dataset,
@@ -612,6 +762,12 @@ class MainWindow(QMainWindow):
         if not ok:
             QMessageBox.warning(self, "提示", "训练已在运行中")
         self._refresh_train_buttons()
+
+    def _on_train_epoch(self, info):
+        self.train_epoch_label.setText(f"Epoch: {info.get('epoch', '-')}/{info.get('epochs', '-')}")
+        self.train_loss_label.setText(f"Loss: {info.get('loss', '-')}")
+        self.train_map_label.setText(f"mAP50: {info.get('mAP50', '-')}")
+        self.train_eta_label.setText(f"ETA: {info.get('eta_s', '-')}s")
 
     def _on_train_log(self, line: str):
         self.train_log.appendPlainText(line)
@@ -647,11 +803,13 @@ class MainWindow(QMainWindow):
         f, _ = QFileDialog.getOpenFileName(self, "选择权重文件", "", "YOLO 权重 (*.pt)")
         if f:
             self.weights_combo.setCurrentText(f)
+            self._settings.setValue("recent/weights", f)
 
     def _on_browse_dataset(self):
         f, _ = QFileDialog.getOpenFileName(self, "选择数据集配置", "", "YAML (*.yaml *.yml)")
         if f:
             self.dataset_edit.setText(f)
+            self._settings.setValue("recent/dataset", f)
 
     # ======================== 日志页 ========================
 
@@ -660,6 +818,19 @@ class MainWindow(QMainWindow):
         if lines == self._last_log_tail:
             return
         self._last_log_tail = lines
+        self._apply_log_filter()
+
+    def _apply_log_filter(self):
+        if not hasattr(self, "log_view"):
+            return
+        levels = []
+        if self.log_filter_info.isChecked():
+            levels.append("INFO")
+        if self.log_filter_warning.isChecked():
+            levels.append("WARNING")
+        if self.log_filter_error.isChecked():
+            levels.append("ERROR")
+        lines = [ln for ln in self._last_log_tail if any(lv in ln for lv in levels)]
         self.log_view.setPlainText("\n".join(lines))
         sb = self.log_view.verticalScrollBar()
         sb.setValue(sb.maximum())
