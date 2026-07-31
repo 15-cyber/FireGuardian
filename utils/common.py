@@ -1,4 +1,4 @@
-﻿"""
+"""
 ============================================================
 FireGuardian 共享工具模块
 包含：数据类定义、配置加载、公共函数
@@ -101,6 +101,7 @@ class Detection:
     inference_time_ms: float = 0.0
     image_width: int = 0
     image_height: int = 0
+    frame_id: int = -1  # 帧号（-1 表示未提供，M8 截图元数据使用）
 
     @property
     def fire_boxes(self) -> List[BoundingBox]:

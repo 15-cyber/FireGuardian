@@ -1,4 +1,4 @@
-﻿# FireGuardian Module 6～Module 11 改进要点（源自改进说明文档）
+# FireGuardian Module 6～Module 11 改进要点（源自改进说明文档）
 
 > 开发每个模块时，对照此清单逐条检查，确保全部落地。
 
@@ -89,16 +89,37 @@ M5 Simulator ──→ DetectionResult ──→ M6 Aggregator ──→ FireEve
 
 ---
 
-## 四、M8 自动截图
+## 四、M8 自动截图（已完成）
 
-- [ ] **回调驱动**
-  - M6 on_event_confirmed → M8 保存截图
+- [x] **回调驱动**
+  - M6 on_event_confirmed / on_event_updated / on_event_ended → M8 保存截图
+  - M7 on_decision → 危险等级升级截图（可选挂钩）
   - 不轮询、不主动检测
 
-- [ ] **保存内容**
-  - 原图
-  - 检测标注图
-  - event_info.txt（事件编号 / 时间 / 危险等级 / 检测类别）
+- [x] **四个截图时机（数量受控）**
+  - confirmed: 事件首次确认
+  - peak: 面积达到新峰值（每事件最多一张）
+  - danger_level_upgraded: 危险等级升级（low→medium→high 最多两张）
+  - final: 事件结束最后一帧
+
+- [x] **保存内容**
+  - 原图（_raw）+ 检测标注图（_annotated）+ 元数据（_meta.json）
+  - 事件汇总 event_info.json（供 M10 报告使用）
+
+- [x] **每事件独立目录**
+  - screenshots/event_<event_id>/
+
+- [x] **元数据字段**
+  - event_id / frame_id / timestamp / reason / fire_area_ratio / smoke_area_ratio
+
+- [x] **统一路径管理**
+  - utils/path_manager.py（PathManager）集中生成截图/报告路径
+
+- [x] **失败隔离**
+  - 写入失败打印提示，不影响主检测流程
+
+- [x] **文件名无中文**
+  - 全部 ASCII（event_id 经安全转义）
 
 ---
 

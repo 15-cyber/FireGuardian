@@ -1,4 +1,4 @@
-﻿# ============================================================
+# ============================================================
 # FireGuardian 全局配置文件
 # 所有模块参数统一在此管理
 # ============================================================
@@ -112,8 +112,15 @@ agent:
 # ---------- 自动截图配置 (M8) ----------
 screenshot:
   output_dir: screenshots
+  per_event_dir: true           # 每个事件建立独立目录
   save_original: true           # 保存原图
   save_annotated: true          # 保存检测标注图
+  save_metadata: true           # 保存截图元数据 JSON
+  triggers:
+    confirmed: true             # 事件首次确认时截图
+    peak: true                  # 面积达到新峰值时截图
+    danger_upgrade: true        # 危险等级升级时截图
+    final: true                 # 事件结束时保存最后一帧
 
 # ---------- 日志配置 (M9) ----------
 log:
