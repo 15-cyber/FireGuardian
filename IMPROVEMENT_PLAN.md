@@ -179,10 +179,19 @@ M5 Simulator ──→ DetectionResult ──→ M6 Aggregator ──→ FireEve
   - images/ - 截图副本
 
 - [x] **报告内容**
-  - 基本信息 / 检测统计 / 事件时间线 / Agent 分析 / 图片证据 / 免责声明
+  - 封面 / 事件摘要 / 基本信息 / 检测统计 / 检测趋势图 / 事件时间线 / Agent 分析 / 图片证据 / 配置快照 / 免责声明
 
 - [x] **中文 PDF 字体处理**
   - pdf_font 配置 + 自动检测；不可用时只生成 md+json 并提示，不崩溃
+  - [x] **按 M10 核查文档完善（2026-07-31）**
+    - PDF 封面：FireGuardian / Fire Event Analysis Report / 事件编号 / 生成时间 / 模型 / 版本 / Git Commit / 报告版本
+    - 事件摘要（Executive Summary）：事件等级 / 持续时长 / 火焰峰值 / 烟雾峰值 / 最终建议
+    - 检测趋势图 trend.png：火焰面积 / 烟雾面积随时间曲线 + 危险等级阶梯线（matplotlib，无数据自动跳过）
+    - 完整性检查：Event / Decision / Screenshot / Metadata / Timeline 缺数据只警告（md/pdf/json），绝不崩溃
+    - 配置快照：模型 / conf / iou / image_size（读取 config.yaml）
+    - 版本信息：FireGuardian Version / Git Commit / Model Version / 报告版本
+    - 图片证据说明：Fire Area% / Smoke% / Reason
+    - 免责声明增加：报告由 FireGuardian 自动生成，仅供辅助参考
 
 - [x] **自测**：完整事件包 + M6 事件驱动两个场景
 
