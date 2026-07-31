@@ -148,6 +148,18 @@ M5 Simulator ──→ DetectionResult ──→ M6 Aggregator ──→ FireEve
 
 - [x] **桥接 M6**（attach_event_logger 链式挂接，不覆盖已有回调）
 
+- [x] **Session ID**（run_YYYYMMDD_HHMMSS，支持环境变量覆盖，区分多次运行）
+
+- [x] **source_module 字段**（如 M6/M7，日志可快速追溯来源）
+
+- [x] **模块耗时统计**（log_elapsed / timed 上下文计时器，event_type=elapsed）
+
+- [x] **Debug 开关**（config log.debug: false，true 时提升为 DEBUG 级详细日志）
+
+- [x] **run_summary.json**（save_run_summary：session/时长/事件计数/危险等级分布/runtime_stats）
+
+- [x] **时间统一 ISO8601**（毫秒精度，可直接被 Pandas/Elastic 解析）
+
 ---
 
 ## 六、M10 报告生成

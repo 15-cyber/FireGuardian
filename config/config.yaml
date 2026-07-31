@@ -129,6 +129,7 @@ screenshot:
 # ---------- 日志配置 (M9) ----------
 log:
   level: INFO                   # DEBUG / INFO / WARNING / ERROR
+  debug: false                  # true=DEBUG 级别（记录逐帧检测等详细日志）
   application_file: logs/application.log   # 系统日志（程序运行与模块状态）
   error_file: logs/error.log               # 异常堆栈（ERROR 及以上）
   events_file: logs/events.jsonl           # 结构化事件日志（JSON Lines）
