@@ -38,11 +38,11 @@ def load_config(reload: bool = False) -> dict:
 
 class EventStatus(str, Enum):
     """火灾事件状态"""
-    CANDIDATE = "candidate"       # 候选：检测到目标，尚未确认
-    CONFIRMED = "confirmed"       # 确认：达到确认条件，事件成立
-    ACTIVE = "active"             # 活跃：持续检测到目标
-    ENDED = "ended"               # 结束：连续未检测到目标
-    DISCARDED = "discarded"       # 废弃：候选未达到确认条件
+    CANDIDATE = "candidate"
+    CONFIRMED = "confirmed"
+    ACTIVE = "active"
+    ENDED = "ended"
+    DISCARDED = "discarded"
 
 
 class GrowthTrend(str, Enum):
@@ -195,42 +195,32 @@ class SimulatorStats:
 
 @dataclass
 class FireEvent:
-    """
-    火灾事件（M6 → M7 的统一接口数据）
-    包含事件从候选到结束的完整状态和统计
-    """
+    """火灾事件（M6 → M7 的统一接口数据）"""
     event_id: str = ""
     status: EventStatus = EventStatus.CANDIDATE
 
-    # 时间
     start_timestamp: float = 0.0
     last_timestamp: float = 0.0
     end_timestamp: Optional[float] = None
 
-    # 帧统计
     total_frames: int = 0
     positive_frames: int = 0
     consecutive_positive_frames: int = 0
     consecutive_negative_frames: int = 0
 
-    # 面积和置信度
     max_fire_area_ratio: float = 0.0
     max_smoke_area_ratio: float = 0.0
     avg_fire_confidence: float = 0.0
     avg_smoke_confidence: float = 0.0
 
-    # 趋势
     growth_trend: str = GrowthTrend.UNKNOWN
 
-    # 来源
     source_type: str = ""
     source_name: str = ""
 
-    # 代表帧
     representative_frame_id: Optional[int] = None
     representative_image_path: Optional[str] = None
 
-    # 附加数据
     metadata: dict = field(default_factory=dict)
     detections: List[Detection] = field(default_factory=list)
 
@@ -244,24 +234,32 @@ class FireEvent:
         return 0.0
 
     @property
+    def positive_ratio(self) -> float:
+        """阳性帧比例（用于可信度计算）"""
+        if self.total_frames <= 0:
+            return 0.0
+        return self.positive_frames / self.total_frames
+
+    @property
     def is_active(self) -> bool:
         return self.status in (EventStatus.CONFIRMED, EventStatus.ACTIVE)
 
     def to_dict(self) -> dict:
         return {
             "event_id": self.event_id,
-            "status": self.status.value,
+            "status": self.status.value if isinstance(self.status, EventStatus) else str(self.status),
             "start_timestamp": self.start_timestamp,
             "last_timestamp": self.last_timestamp,
             "end_timestamp": self.end_timestamp,
             "duration": self.duration,
             "total_frames": self.total_frames,
             "positive_frames": self.positive_frames,
+            "positive_ratio": self.positive_ratio,
             "max_fire_area_ratio": self.max_fire_area_ratio,
             "max_smoke_area_ratio": self.max_smoke_area_ratio,
             "avg_fire_confidence": self.avg_fire_confidence,
             "avg_smoke_confidence": self.avg_smoke_confidence,
-            "growth_trend": self.growth_trend,
+            "growth_trend": self.growth_trend.value if isinstance(self.growth_trend, GrowthTrend) else str(self.growth_trend),
             "source_type": self.source_type,
             "source_name": self.source_name,
         }
@@ -269,17 +267,33 @@ class FireEvent:
 
 @dataclass
 class FireDecision:
-    """Agent 决策结果（M7 的输出）"""
+    """
+    Agent 决策结果（M7 → M10/M11 的统一接口数据）
+    包含危险等级、结构化原因、建议、评分和可信度
+    """
+    event_id: str = ""
     danger_level: str = DangerLevel.LOW
-    reason: str = ""
-    suggestion: str = ""
-    source: str = "rule"          # "rule" / "llm"
+    score: float = 0.0
     confidence: float = 0.0
-    decision_time: str = ""
+    reasons: List[str] = field(default_factory=list)
+    suggestions: List[str] = field(default_factory=list)
+    summary: str = ""
+    decision_source: str = "rule_engine"
+    generated_at: str = ""
     debug_info: dict = field(default_factory=dict)
 
     def to_dict(self) -> dict:
-        return asdict(self)
+        return {
+            "event_id": self.event_id,
+            "danger_level": self.danger_level,
+            "score": self.score,
+            "confidence": self.confidence,
+            "reasons": self.reasons,
+            "suggestions": self.suggestions,
+            "summary": self.summary,
+            "decision_source": self.decision_source,
+            "generated_at": self.generated_at,
+        }
 
 
 @dataclass
@@ -315,7 +329,6 @@ if __name__ == "__main__":
     cfg = load_config()
     print(f"Config OK | {cfg['project']['name']}")
 
-    # EventStatus
     print(f"EventStatus: {[s.value for s in EventStatus]}")
     print(f"GrowthTrend: {[g.value for g in GrowthTrend]}")
 
@@ -332,16 +345,22 @@ if __name__ == "__main__":
         source_type="simulator",
         source_name="valid",
     )
-    print(f"FireEvent OK | {evt.event_id} | {evt.status.value} | duration={evt.duration:.1f}s")
+    print(f"FireEvent OK | {evt.event_id} | duration={evt.duration:.1f}s | positive_ratio={evt.positive_ratio:.2f}")
 
-    # FireDecision
+    # FireDecision (upgraded)
     dec = FireDecision(
+        event_id="EVT-001",
         danger_level=DangerLevel.HIGH,
-        reason="连续检测 5 秒，火势扩大",
-        suggestion="立即检查现场",
-        source="rule",
-        debug_info={"fire_area": 0.15, "duration": 5.0},
+        score=0.57,
+        confidence=0.82,
+        reasons=["火焰面积较大", "持续超过阈值"],
+        suggestions=["立即检查现场"],
+        summary="大面积火焰持续扩大，属于高风险",
+        decision_source="rule_engine",
+        generated_at="2026-07-31 12:00:00",
     )
-    print(f"FireDecision OK | {dec.danger_level} | {dec.source}")
+    print(f"FireDecision OK | {dec.danger_level} | score={dec.score} | conf={dec.confidence}")
+    print(f"  reasons: {dec.reasons}")
+    print(f"  suggestions: {dec.suggestions}")
 
     print("\nAll shared components OK")

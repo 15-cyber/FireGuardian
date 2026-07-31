@@ -95,6 +95,14 @@ agent:
     smoke_area_warning: 0.08
     duration_warning: 3.0          # 秒
     duration_alert: 10.0           # 秒
+  overrides:
+    high:
+      min_fire_area_ratio: 0.15
+      min_duration_seconds: 10
+      require_growth: true
+    smoke_only_medium:
+      min_smoke_area_ratio: 0.15
+      min_duration_seconds: 10
   llm:
     enabled: false                 # 第一版用规则引擎
     api_key: ''
