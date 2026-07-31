@@ -1,4 +1,4 @@
-﻿# ========================
+# ========================
 # FireGuardian .gitignore
 # ========================
 
@@ -35,6 +35,7 @@ train/exp*/
 
 # --- 日志和截图（运行时生成，不提交） ---
 logs/*.log
+logs/*.jsonl
 screenshots/
 reports/*.pdf
 reports/*.md

@@ -126,13 +126,27 @@ M5 Simulator ──→ DetectionResult ──→ M6 Aggregator ──→ FireEve
 
 ---
 
-## 五、M9 日志模块（已有，补充）
+## 五、M9 日志模块（已完成，按改进说明重构）
 
-- [ ] **log_event(event: FireEvent)** 结构化日志函数
-  - 记录事件全部字段到 JSON 行
-  - 便于后续检索
+- [x] **系统日志与事件日志分离**
+  - logs/application.log：程序运行与模块状态
+  - logs/error.log：异常堆栈（ERROR 及以上）
+  - logs/events.jsonl：结构化事件日志（JSON Lines）
 
-- [ ] **程序关闭时输出统计摘要**
+- [x] **log_event(event, event_type)** 结构化日志函数
+  - 统一字段：time / level / module / event_type / event_id / frame_id / details
+  - 记录事件全部字段（to_dict + metadata）
+  - 提供 log_event_confirmed/updated/ended/discarded、log_decision
+
+- [x] **日志轮转**：rotation / retention / compression 配置化（loguru）
+
+- [x] **敏感信息脱敏**：sensitive_keys 递归掩码（api_key / token / secret / password 等）
+
+- [x] **写入失败不影响主流程**（EventLogWriter try/except）
+
+- [x] **程序关闭统计摘要**（print_summary，按 event_type 计数）
+
+- [x] **桥接 M6**（attach_event_logger 链式挂接，不覆盖已有回调）
 
 ---
 
