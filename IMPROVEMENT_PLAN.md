@@ -89,37 +89,40 @@ M5 Simulator ──→ DetectionResult ──→ M6 Aggregator ──→ FireEve
 
 ---
 
-## 四、M8 自动截图（已完成）
+## 四、M8 自动截图（已完成，已按核查文档复核）
 
 - [x] **回调驱动**
   - M6 on_event_confirmed / on_event_updated / on_event_ended → M8 保存截图
   - M7 on_decision → 危险等级升级截图（可选挂钩）
-  - 不轮询、不主动检测
+  - 不轮询、不主动检测；不重复推理（只复用检测框绘制）
 
 - [x] **四个截图时机（数量受控）**
-  - confirmed: 事件首次确认
-  - peak: 面积达到新峰值（每事件最多一张）
-  - danger_level_upgraded: 危险等级升级（low→medium→high 最多两张）
-  - final: 事件结束最后一帧
+  - confirmed: 事件首次确认（每事件去重，只保存一组）
+  - peak: 峰值指标配置化（peak_metric: fire_area/smoke_area/combined_area），更高峰值替换旧图，始终对应最终最高峰值
+  - danger_level_upgraded: 按转换去重（upgrade_low_to_medium / upgrade_medium_to_high），互不覆盖
+  - final: 默认使用最后阳性帧（use_last_positive_frame_for_final）
 
 - [x] **保存内容**
-  - 原图（_raw）+ 检测标注图（_annotated）+ 元数据（_meta.json）
-  - 事件汇总 event_info.json（供 M10 报告使用）
+  - 原图（_raw）+ 检测标注图（_annotated）+ 元数据（_meta.json，原子写入）
+  - 事件汇总 event_info.json（原子写入，供 M10 报告使用）
 
-- [x] **每事件独立目录**
-  - screenshots/event_<event_id>/
+- [x] **每事件独立目录**：screenshots/event_<event_id>/
 
 - [x] **元数据字段**
   - event_id / frame_id / timestamp / reason / fire_area_ratio / smoke_area_ratio
+  - 升级图附带 previous/current_danger_level、decision_score/confidence/source
+  - write_status 记录每个文件写入成功/失败
 
-- [x] **统一路径管理**
-  - utils/path_manager.py（PathManager）集中生成截图/报告路径
+- [x] **统一截图记录**
+  - utils/common.py 新增 ScreenshotRecord 数据类（M8 → M10 契约）
 
-- [x] **失败隔离**
-  - 写入失败打印提示，不影响主检测流程
+- [x] **统一路径管理**：utils/path_manager.py（PathManager）
 
-- [x] **文件名无中文**
-  - 全部 ASCII（event_id 经安全转义）
+- [x] **失败隔离**：写入失败记录 write_status，不影响主检测流程
+
+- [x] **状态隔离与清理**：按 event_id 隔离，事件结束后 cleanup_event_cache
+
+- [x] **自测覆盖 11 项**：confirmed 去重 / 峰值替换 / 升级去重 / 多级升级 / 降级不截图 / 最后阳性帧 / 写入失败 / 原子写入 / 多事件隔离 / 不重复推理 / M6 联动
 
 ---
 

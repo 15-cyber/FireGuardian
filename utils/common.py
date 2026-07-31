@@ -298,6 +298,28 @@ class FireDecision:
 
 
 @dataclass
+class ScreenshotRecord:
+    """M8 截图记录（统一结构化对象，供 M10 报告使用）"""
+    event_id: str = ""
+    reason: str = ""
+    frame_id: int = -1
+    simulated_timestamp: float = 0.0
+    raw_image_path: str = ""
+    annotated_image_path: str = ""
+    metadata_path: str = ""
+    fire_area_ratio: float = 0.0
+    smoke_area_ratio: float = 0.0
+    danger_level: Optional[str] = None
+    decision_score: Optional[float] = None
+    decision_confidence: Optional[float] = None
+    decision_source: Optional[str] = None
+    saved_at: str = ""
+    write_status: dict = field(default_factory=dict)
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
 class AgentDecision:
     """（兼容旧版，后续迁移到 FireDecision）"""
     danger_level: str = DangerLevel.LOW

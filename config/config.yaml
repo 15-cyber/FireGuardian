@@ -111,15 +111,19 @@ agent:
 
 # ---------- 自动截图配置 (M8) ----------
 screenshot:
+  enabled: true
   output_dir: screenshots
   per_event_dir: true           # 每个事件建立独立目录
+  peak_metric: combined_area    # 峰值指标: fire_area / smoke_area / combined_area
   save_original: true           # 保存原图
   save_annotated: true          # 保存检测标注图
   save_metadata: true           # 保存截图元数据 JSON
+  write_event_info: true        # 事件结束时写入 event_info.json
+  use_last_positive_frame_for_final: true  # final 使用最后阳性帧
   triggers:
     confirmed: true             # 事件首次确认时截图
-    peak: true                  # 面积达到新峰值时截图
-    danger_upgrade: true        # 危险等级升级时截图
+    peak: true                  # 面积达到新峰值时截图（更高峰值替换旧图）
+    danger_upgrade: true        # 危险等级升级时截图（按 low_to_medium 等转换去重）
     final: true                 # 事件结束时保存最后一帧
 
 # ---------- 日志配置 (M9) ----------
