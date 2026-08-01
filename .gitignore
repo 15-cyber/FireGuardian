@@ -55,3 +55,11 @@ datasets/*.json
 
 # --- Word 临时文件 ---
 ~$*.docx
+
+# --- Ultralytics 本地配置（settings/字体缓存） ---
+.ultralytics/
+
+
+# --- 大数据量审计 JSON（8MB，不入库；.md 已入库） ---
+tools/dataset_audit.json
+
