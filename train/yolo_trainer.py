@@ -190,9 +190,9 @@ class YOLOTrainer:
                     "total_seconds": round(float(total), 1),
                 })
 
-        # 注册回调
-        YOLO.add_callback("on_train_epoch_end", on_train_epoch_end)
-        YOLO.add_callback("on_train_end", on_train_end)
+        # 注册回调（实例方法：ultralytics>=8.4 中 add_callback 为实例方法）
+        self.model.add_callback("on_train_epoch_end", on_train_epoch_end)
+        self.model.add_callback("on_train_end", on_train_end)
 
     def train(self,
               epochs: Optional[int] = None,
@@ -240,6 +240,11 @@ class YOLOTrainer:
         model_path = str(weights)
         self.model = YOLO(model_path)
 
+        # Ultralytics 8.4+ 会将相对 project 嵌套到 runs/{task} 下，
+        # 这里统一改为基于项目根的绝对路径，保证输出目录符合预期
+        if not os.path.isabs(str(project)):
+            project = str(_ROOT / str(project))
+
         # 设置回调
         self._setup_callbacks(callback)
 
@@ -273,7 +278,7 @@ class YOLOTrainer:
         self.device = device
 
         # 复制最佳模型到 models/best.pt
-        best_source = _ROOT / project / exp_name / "weights" / "best.pt"
+        best_source = Path(self.model.trainer.save_dir) / "weights" / "best.pt"
         ensure_dir(str(_MODEL_TARGET_DIR))
         best_target = _MODEL_TARGET_DIR / "best.pt"
 

@@ -1,0 +1,60 @@
+{
+  "seed": 42,
+  "best_path": "E:\\Codex项目\\FireGuardian\\models\\best.pt",
+  "total_seconds": 312.0,
+  "epochs": 3,
+  "per_epoch": [
+    {
+      "kind": "epoch",
+      "epoch": 0,
+      "total_epochs": 100,
+      "loss": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "mAP50": 0.0,
+      "mAP50-95": 0.0,
+      "best_map": 0.0,
+      "elapsed_s": 133.6,
+      "eta_s": 13352.5
+    },
+    {
+      "kind": "epoch",
+      "epoch": 1,
+      "total_epochs": 100,
+      "loss": 0.0,
+      "precision": 0.2599,
+      "recall": 0.2879,
+      "mAP50": 0.183,
+      "mAP50-95": 0.0662,
+      "best_map": 0.183,
+      "elapsed_s": 227.4,
+      "eta_s": 22504.4
+    },
+    {
+      "kind": "epoch",
+      "epoch": 2,
+      "total_epochs": 100,
+      "loss": 0.0,
+      "precision": 0.4224,
+      "recall": 0.3087,
+      "mAP50": 0.3061,
+      "mAP50-95": 0.1421,
+      "best_map": 0.3061,
+      "elapsed_s": 299.8,
+      "eta_s": 14685.3
+    }
+  ],
+  "best": {
+    "kind": "epoch",
+    "epoch": 2,
+    "total_epochs": 100,
+    "loss": 0.0,
+    "precision": 0.4224,
+    "recall": 0.3087,
+    "mAP50": 0.3061,
+    "mAP50-95": 0.1421,
+    "best_map": 0.3061,
+    "elapsed_s": 299.8,
+    "eta_s": 14685.3
+  }
+}
