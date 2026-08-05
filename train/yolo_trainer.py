@@ -26,6 +26,7 @@ os.environ.setdefault("YOLO_CONFIG_DIR", str(_ROOT / ".venv"))
 
 # ---------- Ultralytics 导入 ----------
 from ultralytics import YOLO
+import torch
 
 # ---------- 项目内部导入 ----------
 if str(_ROOT) not in sys.path:
@@ -155,6 +156,24 @@ class YOLOTrainer:
                     f"ETA: {eta:.0f}s"
                 )
 
+                # 学习率与显存（Baseline V1 任务书第九节要求逐轮记录）
+                try:
+                    lr_val = trainer.lr if hasattr(trainer, "lr") else 0.0
+                    if isinstance(lr_val, dict):
+                        # Ultralytics 8.4+：lr 为参数字典 {pg0/pg1/pg2: ...}
+                        vals = [v for v in lr_val.values() if isinstance(v, (int, float))]
+                        lr_val = vals[0] if vals else 0.0
+                    elif isinstance(lr_val, (list, tuple)):
+                        lr_val = lr_val[0] if lr_val else 0.0
+                except Exception:
+                    lr_val = 0.0
+                gpu_mem = 0.0
+                try:
+                    if torch.cuda.is_available():
+                        gpu_mem = torch.cuda.memory_allocated() / (1024 ** 2)
+                except Exception:
+                    pass
+
                 # 转发给 GUI / 外部监听
                 if self._train_callback:
                     self._train_callback({
@@ -167,6 +186,8 @@ class YOLOTrainer:
                         "mAP50": round(float(map50), 4),
                         "mAP50-95": round(float(map95), 4),
                         "best_map": round(float(self._best_map), 4),
+                        "lr": round(float(lr_val), 6),
+                        "gpu_mem_mb": round(float(gpu_mem), 1),
                         "eta_s": round(float(eta), 1),
                     })
 
@@ -203,6 +224,8 @@ class YOLOTrainer:
               project: Optional[str] = None,
               name: Optional[str] = None,
               dataset_yaml: Optional[str | Path] = None,
+              patience: Optional[int] = None,
+              best_target: Optional[str | Path] = None,
               callback: Optional[callable] = None) -> Path:
         """
         执行训练（参数 None 时使用实例/配置默认值）
@@ -225,6 +248,13 @@ class YOLOTrainer:
         project = project if project else self.project
         exp_name = name if name else self.exp_name
         dataset_yaml = str(Path(dataset_yaml) if dataset_yaml else self.dataset_yaml)
+        patience = patience if patience is not None else self.patience
+        # 提前同步实例参数，保证 epoch 回调显示真实总轮数
+        self.epochs = epochs
+        self.patience = patience
+        self.batch = batch
+        self.imgsz = imgsz
+        self.device = device
         self._stop_requested = False
 
         print(f"\n  {'=' * 50}")
@@ -258,7 +288,7 @@ class YOLOTrainer:
             batch=batch,
             imgsz=imgsz,
             lr0=self.lr,
-            patience=self.patience,
+            patience=patience,
             device=device,
             workers=self.workers,
             project=project,
@@ -277,10 +307,10 @@ class YOLOTrainer:
         self.imgsz = imgsz
         self.device = device
 
-        # 复制最佳模型到 models/best.pt
+        # 复制最佳模型（默认 models/best.pt；Baseline V1 指定独立输出，避免覆盖当前模型）
         best_source = Path(self.model.trainer.save_dir) / "weights" / "best.pt"
-        ensure_dir(str(_MODEL_TARGET_DIR))
-        best_target = _MODEL_TARGET_DIR / "best.pt"
+        best_target = Path(best_target) if best_target else _MODEL_TARGET_DIR / "best.pt"
+        ensure_dir(str(best_target.parent))
 
         if best_source.exists():
             import shutil

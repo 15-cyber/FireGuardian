@@ -1,0 +1,1125 @@
+{
+  "model": "models\\baseline_v1_best.pt",
+  "video": "me.mp4",
+  "total_frames": 182,
+  "fire_positive_frames": 7,
+  "smoke_positive_frames": 110,
+  "positive_frames": 117,
+  "continuous_positive_segments": [
+    {
+      "start": 1,
+      "length": 69,
+      "end": 69
+    },
+    {
+      "start": 71,
+      "length": 10,
+      "end": 80
+    },
+    {
+      "start": 84,
+      "length": 3,
+      "end": 86
+    },
+    {
+      "start": 90,
+      "length": 28,
+      "end": 117
+    },
+    {
+      "start": 159,
+      "length": 4,
+      "end": 162
+    },
+    {
+      "start": 177,
+      "length": 2,
+      "end": 178
+    },
+    {
+      "start": 180,
+      "length": 1,
+      "end": 180
+    }
+  ],
+  "max_confidence": {
+    "fire": 0.7278,
+    "smoke": 0.8595
+  },
+  "m6_events": {
+    "confirmed": 0,
+    "ended": 4,
+    "discarded": 0,
+    "active": 1
+  },
+  "m6_triggered": true,
+  "confidence_distribution": [
+    {
+      "frame": 1,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7221,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.38792
+    },
+    {
+      "frame": 2,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7012,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.39486
+    },
+    {
+      "frame": 3,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7182,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.39041
+    },
+    {
+      "frame": 4,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7226,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.39272
+    },
+    {
+      "frame": 5,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.73,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.3984
+    },
+    {
+      "frame": 6,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7507,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.40219
+    },
+    {
+      "frame": 7,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8205,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.40466
+    },
+    {
+      "frame": 8,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.851,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.40724
+    },
+    {
+      "frame": 9,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8476,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.40942
+    },
+    {
+      "frame": 10,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.829,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.40742
+    },
+    {
+      "frame": 11,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7901,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.40632
+    },
+    {
+      "frame": 12,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7935,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41002
+    },
+    {
+      "frame": 13,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7405,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.40644
+    },
+    {
+      "frame": 14,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7759,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.40883
+    },
+    {
+      "frame": 15,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7869,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41265
+    },
+    {
+      "frame": 16,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6942,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41062
+    },
+    {
+      "frame": 17,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5932,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.424
+    },
+    {
+      "frame": 18,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6356,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42395
+    },
+    {
+      "frame": 19,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6474,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41487
+    },
+    {
+      "frame": 20,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6225,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41405
+    },
+    {
+      "frame": 21,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.643,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.4148
+    },
+    {
+      "frame": 22,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6807,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.4127
+    },
+    {
+      "frame": 23,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6303,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41092
+    },
+    {
+      "frame": 24,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6494,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41511
+    },
+    {
+      "frame": 25,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6996,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41025
+    },
+    {
+      "frame": 26,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7595,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.40961
+    },
+    {
+      "frame": 27,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.77,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41592
+    },
+    {
+      "frame": 28,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8091,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41275
+    },
+    {
+      "frame": 29,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6199,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41782
+    },
+    {
+      "frame": 30,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7476,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41845
+    },
+    {
+      "frame": 31,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7484,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.4193
+    },
+    {
+      "frame": 32,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7189,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41657
+    },
+    {
+      "frame": 33,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7921,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41915
+    },
+    {
+      "frame": 34,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.804,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41727
+    },
+    {
+      "frame": 35,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8258,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41816
+    },
+    {
+      "frame": 36,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8458,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42022
+    },
+    {
+      "frame": 37,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8342,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41714
+    },
+    {
+      "frame": 38,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8318,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41551
+    },
+    {
+      "frame": 39,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7677,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41355
+    },
+    {
+      "frame": 40,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7872,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41426
+    },
+    {
+      "frame": 41,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7231,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41644
+    },
+    {
+      "frame": 42,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8024,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41874
+    },
+    {
+      "frame": 43,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8456,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42186
+    },
+    {
+      "frame": 44,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8464,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42043
+    },
+    {
+      "frame": 45,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8595,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.4254
+    },
+    {
+      "frame": 46,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8497,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42659
+    },
+    {
+      "frame": 47,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8568,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42753
+    },
+    {
+      "frame": 48,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8589,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42866
+    },
+    {
+      "frame": 49,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.8136,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.4297
+    },
+    {
+      "frame": 50,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7841,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42712
+    },
+    {
+      "frame": 51,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7627,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42652
+    },
+    {
+      "frame": 52,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.62,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42736
+    },
+    {
+      "frame": 53,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7261,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42266
+    },
+    {
+      "frame": 54,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7281,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42325
+    },
+    {
+      "frame": 55,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7493,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42534
+    },
+    {
+      "frame": 56,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7798,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42501
+    },
+    {
+      "frame": 57,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.807,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42572
+    },
+    {
+      "frame": 58,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7547,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42118
+    },
+    {
+      "frame": 59,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7176,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41882
+    },
+    {
+      "frame": 60,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7321,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42113
+    },
+    {
+      "frame": 61,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6904,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42771
+    },
+    {
+      "frame": 62,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5422,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42721
+    },
+    {
+      "frame": 63,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5083,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.43768
+    },
+    {
+      "frame": 64,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5349,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.43079
+    },
+    {
+      "frame": 65,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6091,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42449
+    },
+    {
+      "frame": 66,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5337,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42998
+    },
+    {
+      "frame": 67,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5591,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42821
+    },
+    {
+      "frame": 68,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5667,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.42415
+    },
+    {
+      "frame": 69,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5455,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.41832
+    },
+    {
+      "frame": 71,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5512,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.09318
+    },
+    {
+      "frame": 72,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5798,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.09373
+    },
+    {
+      "frame": 73,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6467,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.0965
+    },
+    {
+      "frame": 74,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5634,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.38193
+    },
+    {
+      "frame": 75,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6001,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.38294
+    },
+    {
+      "frame": 76,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6266,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.38596
+    },
+    {
+      "frame": 77,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6316,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.38911
+    },
+    {
+      "frame": 78,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5485,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.38724
+    },
+    {
+      "frame": 79,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5514,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.38383
+    },
+    {
+      "frame": 80,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6159,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.10644
+    },
+    {
+      "frame": 84,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5402,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.09321
+    },
+    {
+      "frame": 85,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5066,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.09024
+    },
+    {
+      "frame": 86,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5573,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.08886
+    },
+    {
+      "frame": 90,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.519,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.09082
+    },
+    {
+      "frame": 91,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5735,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.08881
+    },
+    {
+      "frame": 92,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6465,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.08324
+    },
+    {
+      "frame": 93,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6862,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.0793
+    },
+    {
+      "frame": 94,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6264,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.08064
+    },
+    {
+      "frame": 95,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6549,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.07681
+    },
+    {
+      "frame": 96,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6481,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.06806
+    },
+    {
+      "frame": 97,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.598,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.06873
+    },
+    {
+      "frame": 98,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5341,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.06695
+    },
+    {
+      "frame": 99,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5611,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.35526
+    },
+    {
+      "frame": 100,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.519,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.36946
+    },
+    {
+      "frame": 101,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5863,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.3577
+    },
+    {
+      "frame": 102,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7203,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.3599
+    },
+    {
+      "frame": 103,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7589,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.35886
+    },
+    {
+      "frame": 104,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7568,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.35826
+    },
+    {
+      "frame": 105,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6989,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.35919
+    },
+    {
+      "frame": 106,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6696,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.37943
+    },
+    {
+      "frame": 107,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6909,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.35534
+    },
+    {
+      "frame": 108,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6851,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.34446
+    },
+    {
+      "frame": 109,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.688,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.33841
+    },
+    {
+      "frame": 110,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6314,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.32965
+    },
+    {
+      "frame": 111,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.7084,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.31883
+    },
+    {
+      "frame": 112,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6845,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.31961
+    },
+    {
+      "frame": 113,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6455,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.3135
+    },
+    {
+      "frame": 114,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6387,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.328
+    },
+    {
+      "frame": 115,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.6399,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.34081
+    },
+    {
+      "frame": 116,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5421,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.39567
+    },
+    {
+      "frame": 117,
+      "fire_conf": 0.0,
+      "smoke_conf": 0.5712,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.40878
+    },
+    {
+      "frame": 159,
+      "fire_conf": 0.6197,
+      "smoke_conf": 0.0,
+      "fire_area_ratio": 0.1267,
+      "smoke_area_ratio": 0.0
+    },
+    {
+      "frame": 160,
+      "fire_conf": 0.7278,
+      "smoke_conf": 0.0,
+      "fire_area_ratio": 0.12803,
+      "smoke_area_ratio": 0.0
+    },
+    {
+      "frame": 161,
+      "fire_conf": 0.6714,
+      "smoke_conf": 0.0,
+      "fire_area_ratio": 0.12982,
+      "smoke_area_ratio": 0.0
+    },
+    {
+      "frame": 162,
+      "fire_conf": 0.5061,
+      "smoke_conf": 0.0,
+      "fire_area_ratio": 0.12869,
+      "smoke_area_ratio": 0.0
+    },
+    {
+      "frame": 177,
+      "fire_conf": 0.5312,
+      "smoke_conf": 0.0,
+      "fire_area_ratio": 0.02067,
+      "smoke_area_ratio": 0.0
+    },
+    {
+      "frame": 178,
+      "fire_conf": 0.5622,
+      "smoke_conf": 0.0,
+      "fire_area_ratio": 0.02501,
+      "smoke_area_ratio": 0.0
+    },
+    {
+      "frame": 180,
+      "fire_conf": 0.5365,
+      "smoke_conf": 0.0,
+      "fire_area_ratio": 0.03638,
+      "smoke_area_ratio": 0.0
+    }
+  ],
+  "fire_area_ratio_dist": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.1267,
+    0.12803,
+    0.12982,
+    0.12869,
+    0.02067,
+    0.02501,
+    0.03638
+  ],
+  "smoke_area_ratio_dist": [
+    0.38792,
+    0.39486,
+    0.39041,
+    0.39272,
+    0.3984,
+    0.40219,
+    0.40466,
+    0.40724,
+    0.40942,
+    0.40742,
+    0.40632,
+    0.41002,
+    0.40644,
+    0.40883,
+    0.41265,
+    0.41062,
+    0.424,
+    0.42395,
+    0.41487,
+    0.41405,
+    0.4148,
+    0.4127,
+    0.41092,
+    0.41511,
+    0.41025,
+    0.40961,
+    0.41592,
+    0.41275,
+    0.41782,
+    0.41845,
+    0.4193,
+    0.41657,
+    0.41915,
+    0.41727,
+    0.41816,
+    0.42022,
+    0.41714,
+    0.41551,
+    0.41355,
+    0.41426,
+    0.41644,
+    0.41874,
+    0.42186,
+    0.42043,
+    0.4254,
+    0.42659,
+    0.42753,
+    0.42866,
+    0.4297,
+    0.42712,
+    0.42652,
+    0.42736,
+    0.42266,
+    0.42325,
+    0.42534,
+    0.42501,
+    0.42572,
+    0.42118,
+    0.41882,
+    0.42113,
+    0.42771,
+    0.42721,
+    0.43768,
+    0.43079,
+    0.42449,
+    0.42998,
+    0.42821,
+    0.42415,
+    0.41832,
+    0.09318,
+    0.09373,
+    0.0965,
+    0.38193,
+    0.38294,
+    0.38596,
+    0.38911,
+    0.38724,
+    0.38383,
+    0.10644,
+    0.09321,
+    0.09024,
+    0.08886,
+    0.09082,
+    0.08881,
+    0.08324,
+    0.0793,
+    0.08064,
+    0.07681,
+    0.06806,
+    0.06873,
+    0.06695,
+    0.35526,
+    0.36946,
+    0.3577,
+    0.3599,
+    0.35886,
+    0.35826,
+    0.35919,
+    0.37943,
+    0.35534,
+    0.34446,
+    0.33841,
+    0.32965,
+    0.31883,
+    0.31961,
+    0.3135,
+    0.328,
+    0.34081,
+    0.39567,
+    0.40878,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "smoke_model_reference": {
+    "fire_frames": 12,
+    "smoke_frames": 31,
+    "note": "冒烟模型 smoke_v1 (train 3000/val 600/epochs 3)"
+  },
+  "comparison": {
+    "fire_frames_delta": -5,
+    "smoke_frames_delta": 79
+  },
+  "duration_seconds": 9.6
+}
