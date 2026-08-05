@@ -91,6 +91,53 @@ class BoundingBox:
         return self.area / image_area
 
 
+def union_area_of_boxes(boxes: List[BoundingBox]) -> float:
+    """
+    计算同一组轴对齐矩形框的并集面积（重叠区域不重复计数）。
+    采用扫描线（按 x 排序 + y 区间合并）算法，输入顺序无关。
+    """
+    if not boxes:
+        return 0.0
+
+    events = []
+    for b in boxes:
+        x1, y1, x2, y2 = b.x1, b.y1, b.x2, b.y2
+        if x2 <= x1 or y2 <= y1:
+            continue  # 无效框直接忽略
+        events.append((x1, y1, y2, 1))
+        events.append((x2, y1, y2, -1))
+    if not events:
+        return 0.0
+
+    events.sort(key=lambda e: e[0])
+    area = 0.0
+    prev_x = events[0][0]
+    active: List[tuple] = []
+    for x, y1, y2, typ in events:
+        if x > prev_x and active:
+            # 合并当前活跃的 y 区间
+            active_sorted = sorted(active, key=lambda iv: iv[0])
+            merged_len = 0.0
+            cur_l, cur_r = active_sorted[0]
+            for l, r in active_sorted[1:]:
+                if l > cur_r:
+                    merged_len += cur_r - cur_l
+                    cur_l, cur_r = l, r
+                else:
+                    cur_r = max(cur_r, r)
+            merged_len += cur_r - cur_l
+            area += merged_len * (x - prev_x)
+        prev_x = x
+        if typ == 1:
+            active.append((y1, y2))
+        else:
+            try:
+                active.remove((y1, y2))
+            except ValueError:
+                pass
+    return area
+
+
 @dataclass
 class Detection:
     """单帧检测结果"""
@@ -102,6 +149,7 @@ class Detection:
     image_width: int = 0
     image_height: int = 0
     frame_id: int = -1  # 帧号（-1 表示未提供，M8 截图元数据使用）
+    fps: Optional[float] = None  # 输入源帧率（用于 frame_id → seconds 转换，None=未提供）
 
     @property
     def fire_boxes(self) -> List[BoundingBox]:
@@ -113,11 +161,11 @@ class Detection:
 
     @property
     def fire_area(self) -> float:
-        return sum(b.area for b in self.fire_boxes)
+        return union_area_of_boxes(self.fire_boxes)
 
     @property
     def smoke_area(self) -> float:
-        return sum(b.area for b in self.smoke_boxes)
+        return union_area_of_boxes(self.smoke_boxes)
 
     @property
     def fire_area_ratio(self) -> float:
@@ -203,6 +251,12 @@ class FireEvent:
     start_timestamp: float = 0.0
     last_timestamp: float = 0.0
     end_timestamp: Optional[float] = None
+    # ---- 时间统一字段（规范单位：秒，M7 决策统一使用）----
+    fps: Optional[float] = None               # 输入源帧率（frame_id → seconds 转换用）
+    start_time_seconds: float = 0.0           # 事件开始时间（秒）
+    last_time_seconds: float = 0.0            # 最近一次更新时间（秒）
+    end_time_seconds: Optional[float] = None  # 事件结束时间（秒）
+    duration_seconds: float = 0.0             # 事件持续时长（秒）
 
     total_frames: int = 0
     positive_frames: int = 0
@@ -227,7 +281,12 @@ class FireEvent:
 
     @property
     def duration(self) -> float:
-        """事件持续时间（秒）"""
+        """
+        事件持续时间（秒）。
+        优先使用规范化字段 duration_seconds；未设置时回退到 timestamp 差值。
+        """
+        if self.duration_seconds > 0:
+            return self.duration_seconds
         if self.end_timestamp is not None:
             return self.end_timestamp - self.start_timestamp
         if self.last_timestamp > 0:
@@ -252,6 +311,11 @@ class FireEvent:
             "start_timestamp": self.start_timestamp,
             "last_timestamp": self.last_timestamp,
             "end_timestamp": self.end_timestamp,
+            "fps": self.fps,
+            "start_time_seconds": self.start_time_seconds,
+            "last_time_seconds": self.last_time_seconds,
+            "end_time_seconds": self.end_time_seconds,
+            "duration_seconds": self.duration_seconds,
             "duration": self.duration,
             "total_frames": self.total_frames,
             "positive_frames": self.positive_frames,

@@ -348,6 +348,7 @@ class VideoDetector:
                     image_width=w,
                     image_height=h,
                     frame_id=frame_idx,
+                    fps=fps if fps and fps > 0 else None,
                 )
                 yield frame, detection, frame_idx, total_frames
         finally:

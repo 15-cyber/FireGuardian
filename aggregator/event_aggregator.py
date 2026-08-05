@@ -74,6 +74,7 @@ class EventAggregator:
         self.min_fire_area_ratio = agg_cfg.get("min_fire_area_ratio", 0.002)
         self.min_smoke_area_ratio = agg_cfg.get("min_smoke_area_ratio", 0.003)
         self.growth_threshold = agg_cfg.get("growth_threshold", 0.01)
+        self.fps = agg_cfg.get("fps")  # 可选：全局帧率（frame_id → seconds 转换回退值）
 
         # 当前事件
         self._current_event: Optional[FireEvent] = None
@@ -134,6 +135,21 @@ class EventAggregator:
         )
         return has_fire or has_smoke
 
+    def _to_seconds(self, detection: Detection) -> float:
+        """
+        将单帧检测的时间统一转换为秒（规范时间基准）。
+        优先级：
+          1) 已知 fps 且 frame_id >= 0 → seconds = frame_id / fps；
+          2) 否则使用 detection.timestamp（视为秒）；
+          3) 都没有 → 0。
+        """
+        fps = detection.fps or self.fps
+        if fps and fps > 0 and detection.frame_id is not None and detection.frame_id >= 0:
+            return float(detection.frame_id) / float(fps)
+        if detection.timestamp and detection.timestamp > 0:
+            return float(detection.timestamp)
+        return 0.0
+
     def _create_candidate(self, detection: Detection):
         """创建候选事件"""
         self._current_event = FireEvent(
@@ -156,6 +172,10 @@ class EventAggregator:
             representative_image_path=detection.image_path,
             detections=[detection],
         )
+        evt = self._current_event
+        evt.fps = detection.fps or self.fps
+        evt.start_time_seconds = self._to_seconds(detection)
+        evt.last_time_seconds = evt.start_time_seconds
         self._area_history.append(detection.fire_area_ratio + detection.smoke_area_ratio)
         self._check_confirmation()
 
@@ -167,6 +187,10 @@ class EventAggregator:
 
         evt.total_frames += 1
         evt.last_timestamp = detection.timestamp
+        # 统一时间基准（秒）
+        evt.last_time_seconds = self._to_seconds(detection)
+        if evt.last_time_seconds > 0:
+            evt.duration_seconds = max(0.0, evt.last_time_seconds - evt.start_time_seconds)
 
         if is_positive:
             evt.positive_frames += 1
@@ -238,6 +262,9 @@ class EventAggregator:
 
         evt.status = EventStatus.ENDED
         evt.end_timestamp = evt.last_timestamp
+        evt.end_time_seconds = evt.last_time_seconds if evt.last_time_seconds > 0 else None
+        if evt.end_time_seconds is not None and evt.end_time_seconds > 0:
+            evt.duration_seconds = max(0.0, evt.end_time_seconds - evt.start_time_seconds)
         evt.metadata["decision_required"] = True
 
         # 保存到历史

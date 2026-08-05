@@ -135,6 +135,7 @@ class FireDecisionAgent:
             "base_level": base_level,
             "override_applied": final_level != base_level,
             "features": {k: round(v, 4) for k, v in features.items()},
+            "duration_seconds": round(self._event_duration_seconds(event), 4),
             "weights": {
                 "fire_area": self.weight_fire_area,
                 "smoke_area": self.weight_smoke_area,
@@ -184,8 +185,10 @@ class FireDecisionAgent:
                 f"max_smoke_area_ratio 超出范围 [0, 1]: {event.max_smoke_area_ratio}"
             )
 
-        if event.duration < 0:
-            raise ValueError(f"事件持续时长不能为负数: {event.duration}s")
+        if self._event_duration_seconds(event) < 0:
+            raise ValueError(
+                f"事件持续时长不能为负数: {self._event_duration_seconds(event)}s"
+            )
 
         if event.total_frames < 0 or event.positive_frames < 0:
             raise ValueError("帧数不能为负数")
@@ -196,7 +199,7 @@ class FireDecisionAgent:
         """提取并归一化各因素到 0~1 范围"""
         fire_score = self._normalize_area(event.max_fire_area_ratio, norm_max=0.2)
         smoke_score = self._normalize_area(event.max_smoke_area_ratio, norm_max=0.3)
-        duration_score = self._normalize_duration(event.duration, norm_max=30.0)
+        duration_score = self._normalize_duration(self._event_duration_seconds(event), norm_max=30.0)
         growth_score = self._normalize_growth(event.growth_trend)
 
         return {
@@ -219,6 +222,18 @@ class FireDecisionAgent:
         if seconds <= 0:
             return 0.0
         return min(seconds / norm_max, 1.0)
+
+    @staticmethod
+    def _event_duration_seconds(event: FireEvent) -> float:
+        """
+        返回事件持续时间（秒）。
+        M7 所有时长阈值（duration_warning / duration_alert /
+        overrides.min_duration_seconds）均基于秒；优先使用 M6 输出的
+        duration_seconds，缺失时回退到 timestamp 差值（duration）。
+        """
+        if event.duration_seconds > 0:
+            return event.duration_seconds
+        return event.duration
 
     @staticmethod
     def _normalize_growth(trend) -> float:
@@ -270,7 +285,7 @@ class FireDecisionAgent:
             require_growth = high_cfg.get("require_growth", True)
 
             fire_ok = event.max_fire_area_ratio >= min_fire
-            dur_ok = event.duration >= min_dur
+            dur_ok = self._event_duration_seconds(event) >= min_dur
             growth_ok = (not require_growth) or event.growth_trend in (
                 GrowthTrend.INCREASING, GrowthTrend.INCREASING.value
             )
@@ -285,9 +300,9 @@ class FireDecisionAgent:
                 return DangerLevel.HIGH, override_reasons
 
         # 规则 2: 持续超长时间 → 至少 medium（防止面积小但持续久被低估）
-        if event.duration >= self.duration_alert and base_level == DangerLevel.LOW:
+        if self._event_duration_seconds(event) >= self.duration_alert and base_level == DangerLevel.LOW:
             override_reasons.append(
-                f"持续 {event.duration:.0f} 秒超过严重告警阈值"
+                f"持续 {self._event_duration_seconds(event):.0f} 秒超过严重告警阈值"
                 f" → 即使面积较小也提升为中等风险"
             )
             base_level = DangerLevel.MEDIUM
@@ -299,7 +314,7 @@ class FireDecisionAgent:
             min_dur = smoke_cfg.get("min_duration_seconds", 10)
 
             smoke_ok = event.max_smoke_area_ratio >= min_smoke
-            dur_ok = event.duration >= min_dur
+            dur_ok = self._event_duration_seconds(event) >= min_dur
 
             if smoke_ok and dur_ok and event.max_fire_area_ratio < 0.05:
                 if base_level == DangerLevel.LOW:
@@ -355,13 +370,14 @@ class FireDecisionAgent:
             reasons.append(f"烟雾面积占比 {event.max_smoke_area_ratio:.1%}")
 
         # 时长原因
-        if event.duration > 0:
-            if event.duration >= self.duration_alert:
-                reasons.append(f"持续 {event.duration:.0f} 秒（超过严重告警阈值）")
-            elif event.duration >= self.duration_warning:
-                reasons.append(f"持续 {event.duration:.0f} 秒（超过预警阈值）")
+        event_duration = self._event_duration_seconds(event)
+        if event_duration > 0:
+            if event_duration >= self.duration_alert:
+                reasons.append(f"持续 {event_duration:.0f} 秒（超过严重告警阈值）")
+            elif event_duration >= self.duration_warning:
+                reasons.append(f"持续 {event_duration:.0f} 秒（超过预警阈值）")
             else:
-                reasons.append(f"持续 {event.duration:.0f} 秒")
+                reasons.append(f"持续 {event_duration:.0f} 秒")
 
         # 趋势原因
         trend_str = event.growth_trend.value if isinstance(event.growth_trend, GrowthTrend) else str(event.growth_trend)

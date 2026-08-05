@@ -398,6 +398,7 @@ class ValidationStreamSimulator:
             inference_time_ms=t_infer,
             image_width=w,
             image_height=h,
+            fps=(1.0 / self.interval_seconds) if self.interval_seconds and self.interval_seconds > 0 else None,
         )
 
         return frame_data, detection
