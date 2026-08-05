@@ -1,0 +1,286 @@
+{
+  "status": "ok",
+  "model": "models\\baseline_v1_best.pt",
+  "model_name": "baseline_v1_best.pt",
+  "class_names": {
+    "0": "fire",
+    "1": "smoke"
+  },
+  "val_subset_total": 3000,
+  "frames_processed": 16,
+  "frames": [
+    {
+      "frame_id": 0,
+      "image": "runs\\baseline_chain_m5_images\\both_FireAndSmoke_CV13976.jpg",
+      "has_fire": true,
+      "has_smoke": true,
+      "fire_area_ratio": 0.10847,
+      "smoke_area_ratio": 0.17138,
+      "avg_fire_conf": 0.7713,
+      "avg_smoke_conf": 0.702,
+      "bbox_count": 2
+    },
+    {
+      "frame_id": 1,
+      "image": "runs\\baseline_chain_m5_images\\both_FireAndSmoke_CV18775.jpg",
+      "has_fire": true,
+      "has_smoke": true,
+      "fire_area_ratio": 0.01001,
+      "smoke_area_ratio": 0.9767,
+      "avg_fire_conf": 0.5373,
+      "avg_smoke_conf": 0.6704,
+      "bbox_count": 3
+    },
+    {
+      "frame_id": 2,
+      "image": "runs\\baseline_chain_m5_images\\both_FireAndSmoke_CV5798.jpg",
+      "has_fire": true,
+      "has_smoke": true,
+      "fire_area_ratio": 0.0051,
+      "smoke_area_ratio": 0.11672,
+      "avg_fire_conf": 0.6836,
+      "avg_smoke_conf": 0.7781,
+      "bbox_count": 2
+    },
+    {
+      "frame_id": 3,
+      "image": "runs\\baseline_chain_m5_images\\both_FireAndSmoke_CV9381.jpg",
+      "has_fire": true,
+      "has_smoke": true,
+      "fire_area_ratio": 0.03063,
+      "smoke_area_ratio": 0.10077,
+      "avg_fire_conf": 0.6141,
+      "avg_smoke_conf": 0.5313,
+      "bbox_count": 2
+    },
+    {
+      "frame_id": 4,
+      "image": "runs\\baseline_chain_m5_images\\fire_Fire_CV5160.jpg",
+      "has_fire": true,
+      "has_smoke": false,
+      "fire_area_ratio": 0.08876,
+      "smoke_area_ratio": 0.0,
+      "avg_fire_conf": 0.8782,
+      "avg_smoke_conf": 0.0,
+      "bbox_count": 1
+    },
+    {
+      "frame_id": 5,
+      "image": "runs\\baseline_chain_m5_images\\fire_Fire_CV6784.jpg",
+      "has_fire": true,
+      "has_smoke": false,
+      "fire_area_ratio": 0.18177,
+      "smoke_area_ratio": 0.0,
+      "avg_fire_conf": 0.7297,
+      "avg_smoke_conf": 0.0,
+      "bbox_count": 2
+    },
+    {
+      "frame_id": 6,
+      "image": "runs\\baseline_chain_m5_images\\fire_Fire_CV7563.jpg",
+      "has_fire": true,
+      "has_smoke": false,
+      "fire_area_ratio": 0.93668,
+      "smoke_area_ratio": 0.0,
+      "avg_fire_conf": 0.627,
+      "avg_smoke_conf": 0.0,
+      "bbox_count": 2
+    },
+    {
+      "frame_id": 7,
+      "image": "runs\\baseline_chain_m5_images\\fire_Fire_CV7888.jpg",
+      "has_fire": true,
+      "has_smoke": false,
+      "fire_area_ratio": 0.00805,
+      "smoke_area_ratio": 0.0,
+      "avg_fire_conf": 0.6694,
+      "avg_smoke_conf": 0.0,
+      "bbox_count": 1
+    },
+    {
+      "frame_id": 8,
+      "image": "runs\\baseline_chain_m5_images\\neg_FireNorSmoke_CV13030.jpg",
+      "has_fire": false,
+      "has_smoke": false,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.0,
+      "avg_fire_conf": 0.0,
+      "avg_smoke_conf": 0.0,
+      "bbox_count": 0
+    },
+    {
+      "frame_id": 9,
+      "image": "runs\\baseline_chain_m5_images\\neg_FireNorSmoke_CV14251.jpg",
+      "has_fire": false,
+      "has_smoke": false,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.0,
+      "avg_fire_conf": 0.0,
+      "avg_smoke_conf": 0.0,
+      "bbox_count": 0
+    },
+    {
+      "frame_id": 10,
+      "image": "runs\\baseline_chain_m5_images\\neg_FireNorSmoke_CV25117.jpg",
+      "has_fire": false,
+      "has_smoke": false,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.0,
+      "avg_fire_conf": 0.0,
+      "avg_smoke_conf": 0.0,
+      "bbox_count": 0
+    },
+    {
+      "frame_id": 11,
+      "image": "runs\\baseline_chain_m5_images\\neg_FireNorSmoke_CV33246.jpg",
+      "has_fire": false,
+      "has_smoke": false,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.0,
+      "avg_fire_conf": 0.0,
+      "avg_smoke_conf": 0.0,
+      "bbox_count": 0
+    },
+    {
+      "frame_id": 12,
+      "image": "runs\\baseline_chain_m5_images\\smoke_Smoke_CV19341.jpg",
+      "has_fire": false,
+      "has_smoke": true,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.0286,
+      "avg_fire_conf": 0.0,
+      "avg_smoke_conf": 0.9551,
+      "bbox_count": 1
+    },
+    {
+      "frame_id": 13,
+      "image": "runs\\baseline_chain_m5_images\\smoke_Smoke_CV20448.jpg",
+      "has_fire": false,
+      "has_smoke": true,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.05178,
+      "avg_fire_conf": 0.0,
+      "avg_smoke_conf": 0.855,
+      "bbox_count": 1
+    },
+    {
+      "frame_id": 14,
+      "image": "runs\\baseline_chain_m5_images\\smoke_Smoke_CV21521.jpg",
+      "has_fire": false,
+      "has_smoke": true,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.08137,
+      "avg_fire_conf": 0.0,
+      "avg_smoke_conf": 0.8887,
+      "bbox_count": 1
+    },
+    {
+      "frame_id": 15,
+      "image": "runs\\baseline_chain_m5_images\\smoke_Smoke_CV8601.jpg",
+      "has_fire": false,
+      "has_smoke": true,
+      "fire_area_ratio": 0.0,
+      "smoke_area_ratio": 0.66872,
+      "avg_fire_conf": 0.0,
+      "avg_smoke_conf": 0.6414,
+      "bbox_count": 1
+    }
+  ],
+  "confidence_distribution": {
+    "fire": {
+      "min": 0.5373,
+      "max": 0.8782,
+      "mean": 0.6888,
+      "count": 8
+    },
+    "smoke": {
+      "min": 0.5313,
+      "max": 0.9551,
+      "mean": 0.7527,
+      "count": 8
+    }
+  },
+  "area_ratio_distribution": {
+    "fire": {
+      "min": 0.0051,
+      "max": 0.93668,
+      "mean": 0.17118,
+      "count": 8
+    },
+    "smoke": {
+      "min": 0.0286,
+      "max": 0.9767,
+      "mean": 0.2745,
+      "count": 8
+    }
+  },
+  "events_confirmed": 0,
+  "events_ended": 2,
+  "events_discarded": 0,
+  "risk_level_distribution": {
+    "medium": 3,
+    "high": 3,
+    "low": 2
+  },
+  "decisions_count": 8,
+  "events_jsonl_growth": 24,
+  "artifacts": {
+    "FE-20260805164158-fcc0f6": {
+      "screenshot_dir": "screenshots\\event_FE-20260805164158-fcc0f6",
+      "screenshot_files": [
+        "confirmed_annotated.jpg",
+        "confirmed_meta.json",
+        "confirmed_raw.jpg",
+        "event_info.json",
+        "final_annotated.jpg",
+        "final_meta.json",
+        "final_raw.jpg",
+        "peak_annotated.jpg",
+        "peak_meta.json",
+        "peak_raw.jpg",
+        "upgrade_medium_to_high_annotated.jpg",
+        "upgrade_medium_to_high_meta.json",
+        "upgrade_medium_to_high_raw.jpg",
+        "upgrade_unknown_to_medium_annotated.jpg",
+        "upgrade_unknown_to_medium_meta.json",
+        "upgrade_unknown_to_medium_raw.jpg"
+      ],
+      "report_dir": "reports\\event_FE-20260805164158-fcc0f6",
+      "report_files": [
+        "event.json",
+        "images",
+        "report.md",
+        "report.pdf"
+      ]
+    },
+    "FE-20260805164200-9b0faf": {
+      "screenshot_dir": "screenshots\\event_FE-20260805164200-9b0faf",
+      "screenshot_files": [
+        "confirmed_annotated.jpg",
+        "confirmed_meta.json",
+        "confirmed_raw.jpg",
+        "event_info.json",
+        "final_annotated.jpg",
+        "final_meta.json",
+        "final_raw.jpg",
+        "peak_annotated.jpg",
+        "peak_meta.json",
+        "peak_raw.jpg",
+        "upgrade_low_to_medium_annotated.jpg",
+        "upgrade_low_to_medium_meta.json",
+        "upgrade_low_to_medium_raw.jpg",
+        "upgrade_unknown_to_low_annotated.jpg",
+        "upgrade_unknown_to_low_meta.json",
+        "upgrade_unknown_to_low_raw.jpg"
+      ],
+      "report_dir": "reports\\event_FE-20260805164200-9b0faf",
+      "report_files": [
+        "event.json",
+        "images",
+        "report.md",
+        "report.pdf"
+      ]
+    }
+  },
+  "elapsed_seconds": 59.1
+}

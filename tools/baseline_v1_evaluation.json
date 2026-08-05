@@ -1,0 +1,121 @@
+{
+  "model": "models\\baseline_v1_best.pt",
+  "model_names": {
+    "0": "fire",
+    "1": "smoke"
+  },
+  "test_set": {
+    "images": 3000,
+    "negative": 600
+  },
+  "eval_conf": 0.25,
+  "overall": {
+    "precision": 0.7313,
+    "recall": 0.6533,
+    "tp": 3264,
+    "fp": 1199,
+    "fn": 1732
+  },
+  "mAP50": {
+    "fire": 0.6942206712449527,
+    "smoke": 0.7761305103076137,
+    "all": 0.7351755907762831
+  },
+  "mAP50-95": {
+    "fire": 0.3903433162611977,
+    "smoke": 0.5210744360225732,
+    "all": 0.4557088761418855
+  },
+  "per_class": {
+    "fire": {
+      "precision": 0.6987,
+      "recall": 0.6284,
+      "tp": 2006,
+      "fp": 865,
+      "fn": 1186
+    },
+    "smoke": {
+      "precision": 0.7902,
+      "recall": 0.6973,
+      "tp": 1258,
+      "fp": 334,
+      "fn": 546
+    }
+  },
+  "confusion_matrix": {
+    "fire": {
+      "fire": 1413,
+      "smoke": 535,
+      "negative": 41
+    },
+    "smoke": {
+      "fire": 577,
+      "smoke": 1340,
+      "negative": 45
+    },
+    "negative": {
+      "fire": 16,
+      "smoke": 24,
+      "negative": 560
+    }
+  },
+  "negative_fp": {
+    "negative_total": 600,
+    "thresholds": {
+      "0.25": {
+        "fp_fire_images": 16,
+        "fp_smoke_images": 24,
+        "fp_both_images": 0,
+        "fp_fire_rate": 0.0267,
+        "fp_smoke_rate": 0.04,
+        "image_level_fp_rate": 0.0667,
+        "avg_fp_boxes_per_image": 0.068,
+        "max_fp_conf_fire": 0.7673,
+        "max_fp_conf_smoke": 0.7524
+      },
+      "0.4": {
+        "fp_fire_images": 7,
+        "fp_smoke_images": 14,
+        "fp_both_images": 0,
+        "fp_fire_rate": 0.0117,
+        "fp_smoke_rate": 0.0233,
+        "image_level_fp_rate": 0.035,
+        "avg_fp_boxes_per_image": 0.035,
+        "max_fp_conf_fire": 0.7673,
+        "max_fp_conf_smoke": 0.7524
+      },
+      "0.5": {
+        "fp_fire_images": 5,
+        "fp_smoke_images": 10,
+        "fp_both_images": 0,
+        "fp_fire_rate": 0.0083,
+        "fp_smoke_rate": 0.0167,
+        "image_level_fp_rate": 0.025,
+        "avg_fp_boxes_per_image": 0.025,
+        "max_fp_conf_fire": 0.7673,
+        "max_fp_conf_smoke": 0.7524
+      }
+    }
+  },
+  "error_cases": {
+    "fp_fire": 39,
+    "fp_smoke": 78,
+    "fn_fire": 87,
+    "fn_smoke": 160,
+    "low_conf": 497
+  },
+  "error_examples_saved": {
+    "fp_fire": 39,
+    "fp_smoke": 50,
+    "fn_fire": 50,
+    "fn_smoke": 50,
+    "low_conf": 50
+  },
+  "curves": {
+    "f1_curve.png": "runs\\baseline_train\\baseline_v1\\eval_curves\\f1_curve.png",
+    "precision_curve.png": "runs\\baseline_train\\baseline_v1\\eval_curves\\precision_curve.png",
+    "pr_curve.png": "runs\\baseline_train\\baseline_v1\\eval_curves\\pr_curve.png",
+    "recall_curve.png": "runs\\baseline_train\\baseline_v1\\eval_curves\\recall_curve.png"
+  },
+  "duration_seconds": 225.1
+}
