@@ -1,0 +1,7 @@
+train: baseline_v1_train.txt
+val: baseline_v1_val.txt
+test: baseline_v1_test.txt
+nc: 2
+names:
+  0: fire
+  1: smoke

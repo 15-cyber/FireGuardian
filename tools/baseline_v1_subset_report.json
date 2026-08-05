@@ -1,0 +1,308 @@
+{
+  "meta": {
+    "tool": "tools/build_baseline_v1_subset.py",
+    "dataset_root": "F:\\火焰数据集\\Dataset",
+    "audit_json": "tools\\dataset_audit.json",
+    "generated_at": "2026-08-02T17:08:48",
+    "duration_seconds": 541.5,
+    "seed": 42,
+    "workers": 8,
+    "limit": 0
+  },
+  "targets": {
+    "train": 15000,
+    "val": 3000,
+    "test": 3000
+  },
+  "actual": {
+    "train": 15000,
+    "val": 3000,
+    "test": 3000
+  },
+  "categories": {
+    "train": {
+      "fire_only": 4500,
+      "smoke_only": 4500,
+      "both": 3000,
+      "negative": 3000
+    },
+    "val": {
+      "fire_only": 900,
+      "smoke_only": 900,
+      "both": 600,
+      "negative": 600
+    },
+    "test": {
+      "fire_only": 900,
+      "smoke_only": 900,
+      "both": 600,
+      "negative": 600
+    }
+  },
+  "exclusions": {
+    "audit_out_of_range_images": 288,
+    "hash_failed": 0,
+    "sha256_duplicates_removed": {
+      "total": 201,
+      "cross_split": 88,
+      "intra_split": 113
+    },
+    "phash_identical_replaced": 717,
+    "phash_identical_removed_no_spare": 0
+  },
+  "phash": {
+    "phash_total": 21000,
+    "cross_identical_pairs_after_replacement": 0,
+    "approx_pairs_1to8": 34483,
+    "approx_pairs_listed": [
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV12667.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV11751.jpg",
+        "hamming": 6
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV12667.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV12369.jpg",
+        "hamming": 6
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV12667.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV11418.jpg",
+        "hamming": 8
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV12667.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV13969.jpg",
+        "hamming": 8
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV12667.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV12664.jpg",
+        "hamming": 6
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV12667.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\FireAndSmoke_CV20482.jpg",
+        "hamming": 6
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV14660.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV14663.jpg",
+        "hamming": 4
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV14660.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV14659.jpg",
+        "hamming": 2
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV14660.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV14611.jpg",
+        "hamming": 2
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV3804.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV4311.jpg",
+        "hamming": 8
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV3760.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV8192.jpg",
+        "hamming": 8
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV8890.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV3725.jpg",
+        "hamming": 8
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV8890.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV2533.jpg",
+        "hamming": 4
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV8691.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV3377.jpg",
+        "hamming": 8
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV8691.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV5497.jpg",
+        "hamming": 4
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV11828.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV12429.jpg",
+        "hamming": 4
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV11828.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV12559.jpg",
+        "hamming": 8
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV2577.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV8121.jpg",
+        "hamming": 6
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV8282.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV5981.jpg",
+        "hamming": 6
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV2478.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV7923.jpg",
+        "hamming": 2
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV2478.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV5315.jpg",
+        "hamming": 2
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV2478.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV7039.jpg",
+        "hamming": 8
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV8476.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV8495.jpg",
+        "hamming": 4
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV8476.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV3919.jpg",
+        "hamming": 2
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV8476.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV2308.jpg",
+        "hamming": 4
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV8476.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\FireAndSmoke_CV9577.jpg",
+        "hamming": 4
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV2227.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV2157.jpg",
+        "hamming": 4
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV1375.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV1380.jpg",
+        "hamming": 6
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV14651.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV14659.jpg",
+        "hamming": 8
+      },
+      {
+        "split_a": "train",
+        "path_a": "train\\images\\Fire_CV14651.jpg",
+        "split_b": "val",
+        "path_b": "valid\\images\\Fire_CV14611.jpg",
+        "hamming": 8
+      }
+    ]
+  },
+  "shortfalls": [],
+  "validation": {
+    "all_pass": true,
+    "checks": [
+      {
+        "name": "all_image_paths_exist",
+        "pass": true,
+        "detail": "missing=0"
+      },
+      {
+        "name": "all_label_paths_exist",
+        "pass": true,
+        "detail": "missing=0"
+      },
+      {
+        "name": "yolo_label_format",
+        "pass": true,
+        "detail": "bad=0"
+      },
+      {
+        "name": "check_det_dataset",
+        "pass": true,
+        "detail": "train=54 val=52 test=53 nc=2 names={0: 'fire', 1: 'smoke'}"
+      },
+      {
+        "name": "ultralytics_random_load_32",
+        "pass": true,
+        "detail": "loaded={'train': 64, 'val': 64, 'test': 64}"
+      }
+    ]
+  },
+  "conclusion": "SUITABLE",
+  "sample_files": {
+    "train": "datasets\\baseline_v1_train.txt",
+    "val": "datasets\\baseline_v1_val.txt",
+    "test": "datasets\\baseline_v1_test.txt",
+    "yaml": "datasets\\fire_smoke_baseline_v1.yaml"
+  }
+}

@@ -63,3 +63,9 @@ datasets/*.json
 # --- 大数据量审计 JSON（8MB，不入库；.md 已入库） ---
 tools/dataset_audit.json
 
+# --- 临时与大型不入库文件（本任务新增） ---
+*.cache
+tools/_audit_work/
+/烟火.mp4
+/tmp_task10.txt
+
