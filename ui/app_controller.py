@@ -38,6 +38,7 @@ from utils.common import (
     BoundingBox,
     Detection,
     FireEvent,
+    FireDecision,
     EventReportData,
     EventStatus,
 )
@@ -46,6 +47,22 @@ from reports.report_generator import ReportGenerator
 from agent.fire_decision_agent import FireDecisionAgent
 from aggregator.event_aggregator import EventAggregator
 from logs.logger import get_logger, log_event, log_decision, flush as _log_flush
+from agent.deepseek_agent import AgentStatus
+from agent.hybrid_decision import run_hybrid_pipeline
+from agent.presentation_models import (
+    AgentTriggerGuard,
+    append_agent_trigger_log,
+    build_agent_presentation_model,
+    extract_memory_results,
+    run_agent_with_timeout,
+)
+
+_LEVEL_RANK = {"low": 0, "medium": 1, "high": 2}
+
+
+def _level_rank(value) -> int:
+    level = getattr(value, "value", value)
+    return _LEVEL_RANK.get(str(level).lower(), 0)
 
 
 class UiController(QObject):
@@ -56,6 +73,10 @@ class UiController(QObject):
     frame_info_ready = pyqtSignal(object)    # 当前帧检测信息（右栏）
     event_ready = pyqtSignal(object)         # 当前事件信息（右栏）
     decision_ready = pyqtSignal(object)      # Agent 决策（右栏）
+    agent_started = pyqtSignal(object)       # Agent 开始（worker 线程）
+    agent_tool_called = pyqtSignal(object)   # Agent 工具调用
+    agent_completed = pyqtSignal(object)     # Agent 完成（PresentationModel dict）
+    agent_failed = pyqtSignal(object)        # Agent 失败/不可用
     history_ready = pyqtSignal(object)       # 事件历史列表
     status_ready = pyqtSignal(object)        # 状态栏：运行/暂停/进度/FPS
     source_finished = pyqtSignal(object)     # 检测源运行结束摘要
@@ -87,6 +108,12 @@ class UiController(QObject):
         self.decisions_by_event: Dict[str, list] = {}
         self.event_max_level: Dict[str, str] = {}
         self._reported: set = set()
+
+        # ---- V2 Agent 集成（Phase 4-A）：worker 线程执行，GUI 只收信号 ----
+        self._llm_agent = None
+        self._agent_results: Dict[str, dict] = {}
+        self._agent_guard = AgentTriggerGuard()
+        self._agent_lock = threading.Lock()
 
         # 运行状态
         self._running = False
@@ -132,6 +159,7 @@ class UiController(QObject):
             self._analyze_event(evt)
         except Exception as e:
             self.log.warning(f"M7 确认决策失败: {e}")
+        self._maybe_run_agent(evt, "event_confirmed")
         try:
             log_event(evt, "event_confirmed", module="event_aggregator", source_module="M6")
         except Exception:
@@ -147,8 +175,17 @@ class UiController(QObject):
         # 仅当聚合器标记需要决策时调用 Agent，避免每帧调用
         if evt.metadata.get("decision_required"):
             evt.metadata["decision_required"] = False
+            prev_decision = self._latest_decision(evt)
+            prev_level = prev_decision.danger_level if prev_decision is not None else None
             try:
                 self._analyze_event(evt)
+                new_decision = self._latest_decision(evt)
+                if (
+                    new_decision is not None
+                    and prev_level is not None
+                    and _level_rank(new_decision.danger_level) > _level_rank(prev_level)
+                ):
+                    self._maybe_run_agent(evt, "risk_upgrade", current_level=new_decision.danger_level)
             except Exception as e:
                 self.log.warning(f"M7 更新决策失败: {e}")
         try:
@@ -163,6 +200,7 @@ class UiController(QObject):
             self._analyze_event(evt)
         except Exception as e:
             self.log.warning(f"M7 结束决策失败: {e}")
+        self._maybe_run_agent(evt, "event_ended")
         try:
             self.screenshot_mgr.on_event_ended(evt)
         except Exception as e:
@@ -222,8 +260,135 @@ class UiController(QObject):
         shots = self.screenshot_mgr.get_event_shot_records(evt.event_id)
         decisions = self.decisions_by_event.get(evt.event_id, [])
         data = EventReportData(event=evt, decisions=decisions, screenshots=shots)
-        self.report_gen.generate(data)
+        agent_entry = self._agent_results.get(evt.event_id)
+        agent_presentation = agent_entry["presentation"] if agent_entry else None
+        self.report_gen.generate(data, agent_presentation=agent_presentation)
         self.log.info(f"M10 报告已生成: {evt.event_id}")
+
+    # ======================== V2 Agent Worker（Phase 4-A）====================
+
+    def _llm_agent_instance(self):
+        """懒创建 FireGuardianLLMAgent；配置缺失时抛出（由调用方捕获）。"""
+        if self._llm_agent is None:
+            from agent.deepseek_agent import FireGuardianLLMAgent
+
+            self._llm_agent = FireGuardianLLMAgent()
+        return self._llm_agent
+
+    def _latest_decision(self, evt: FireEvent):
+        decisions = self.decisions_by_event.get(evt.event_id, [])
+        return decisions[-1] if decisions else None
+
+    def _maybe_run_agent(self, evt: FireEvent, trigger: str, current_level=None) -> bool:
+        """守卫 + 去重 + 计数；启动独立 worker 线程，不阻塞 GUI/帧线程。"""
+        try:
+            self._llm_agent_instance()
+        except Exception as exc:
+            self.agent_failed.emit({
+                "event_id": evt.event_id,
+                "trigger": trigger,
+                "status": "unavailable",
+                "error": f"Agent 未初始化: {exc}",
+            })
+            return False
+        with self._agent_lock:
+            if not self._agent_guard.allowed(evt.event_id, trigger, current_level=current_level):
+                return False
+            call_count = self._agent_guard.record(evt.event_id, trigger, current_level=current_level)
+        append_agent_trigger_log(evt.event_id, trigger, call_count)
+        self.agent_started.emit({
+            "event_id": evt.event_id,
+            "trigger": trigger,
+            "call_count": call_count,
+        })
+        threading.Thread(
+            target=self._agent_worker_run,
+            args=(evt, trigger, call_count),
+            daemon=True,
+            name="FireGuardianAgentWorker",
+        ).start()
+        return True
+
+    @staticmethod
+    def _disagreement_detected(presentation) -> bool:
+        if not presentation.agent_available or presentation.agent_risk_level is None:
+            return False
+        return (
+            presentation.agent_risk_level != presentation.rule_level
+            or presentation.agreement is False
+        )
+
+    def _agent_worker_run(self, evt: FireEvent, trigger: str, call_count: int):
+        """Agent + Hybrid + Presentation，全部在 worker 线程执行。"""
+        try:
+            llm = self._llm_agent_instance()
+            decision = self._latest_decision(evt)
+            if decision is None:
+                decision = FireDecision(event_id=evt.event_id, danger_level="low")
+            outcome = run_agent_with_timeout(llm, evt, decision, trigger=trigger)
+            rule_level = getattr(decision.danger_level, "value", decision.danger_level)
+            hybrid = run_hybrid_pipeline(
+                rule_level=rule_level,
+                outcome=outcome,
+                event_id=evt.event_id,
+                trigger=trigger,
+                model=llm.client.model,
+                logger=llm.logger,
+            )
+            memory_results = extract_memory_results(outcome)
+            presentation = build_agent_presentation_model(
+                evt.event_id, decision, outcome, hybrid, memory_results
+            )
+            with self._agent_lock:
+                self._agent_results[evt.event_id] = {
+                    "trigger": trigger,
+                    "call_count": call_count,
+                    "outcome": outcome.to_dict(),
+                    "hybrid": hybrid.to_dict(),
+                    "presentation": presentation,
+                }
+            self.agent_completed.emit(presentation.to_dict())
+            for tc in outcome.tool_calls:
+                self.agent_tool_called.emit({
+                    "event_id": evt.event_id,
+                    "tool_name": tc.get("name"),
+                    "success": tc.get("success"),
+                })
+            # disagreement 二次分析（每事件最多一次，且不超总上限）
+            if (
+                outcome.status == AgentStatus.OK
+                and trigger != "disagreement"
+                and self._disagreement_detected(presentation)
+            ):
+                with self._agent_lock:
+                    if self._agent_guard.allowed(
+                        evt.event_id, "disagreement", current_level=rule_level
+                    ):
+                        count2 = self._agent_guard.record(
+                            evt.event_id, "disagreement", current_level=rule_level
+                        )
+                    else:
+                        count2 = None
+                if count2 is not None:
+                    append_agent_trigger_log(evt.event_id, "disagreement", count2)
+                    self.agent_started.emit({
+                        "event_id": evt.event_id,
+                        "trigger": "disagreement",
+                        "call_count": count2,
+                    })
+                    threading.Thread(
+                        target=self._agent_worker_run,
+                        args=(evt, "disagreement", count2),
+                        daemon=True,
+                        name="FireGuardianAgentWorker",
+                    ).start()
+        except Exception as exc:
+            self.agent_failed.emit({
+                "event_id": evt.event_id,
+                "trigger": trigger,
+                "status": "unavailable",
+                "error": str(exc),
+            })
 
     # ======================== 数据源控制 ========================
 
@@ -241,6 +406,8 @@ class UiController(QObject):
         self.decisions_by_event.clear()
         self.event_max_level.clear()
         self._reported.clear()
+        self._agent_results.clear()
+        self._agent_guard = AgentTriggerGuard()
         self.event_ready.emit(None)
         self.history_ready.emit([])
         self.frame_info_ready.emit(None)
@@ -608,16 +775,32 @@ class UiController(QObject):
                 status = "生成中"
             start_time = (datetime.fromtimestamp(evt.start_timestamp).strftime("%H:%M:%S")
                           if evt.start_timestamp > 0 else "")
+            agent_entry = self._agent_results.get(evt.event_id)
+            presentation = agent_entry["presentation"] if agent_entry else None
             items.append({
                 "event_id": evt.event_id,
                 "start_time": start_time,
                 "duration": round(evt.duration, 1),
                 "max_danger": self.event_max_level.get(evt.event_id,
                                                        evt.metadata.get("danger_level", "-")),
+                "rule_level": str(presentation.rule_level) if presentation else None,
+                "agent_level": str(presentation.agent_risk_level) if presentation and presentation.agent_risk_level else None,
+                "agent_status": str(presentation.agent_status) if presentation else None,
+                "final_level": str(presentation.final_level) if presentation else None,
+                "memory_used": bool(presentation.memory_used) if presentation else False,
+                "similar_event_count": int(presentation.similar_event_count or 0) if presentation else 0,
                 "report_status": status,
                 "report_path": str(report_path) if exists else "",
             })
         self.history_ready.emit(items)
+
+    def get_agent_presentation(self, event_id: str) -> Optional[dict]:
+        """返回某事件的展示模型 dict（无数据返回 None）。"""
+        agent_entry = self._agent_results.get(event_id)
+        if agent_entry is None:
+            return None
+        presentation = agent_entry.get("presentation")
+        return presentation.to_dict() if presentation is not None else None
 
     def _emit_status(self, **kw):
         payload = {

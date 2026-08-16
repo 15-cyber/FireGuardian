@@ -1,0 +1,20 @@
+{
+  "case_id": "fireworks_01_e2_event",
+  "arm": "without_memory",
+  "agent_status": "ok",
+  "memory_used": false,
+  "similar_event_count": 0,
+  "agent_assessment": "SUSPICIOUS",
+  "agent_risk_level": "medium",
+  "final_level": "medium",
+  "reasoning_summary": "",
+  "recommended_action": "",
+  "memory_summary": "",
+  "tool_calls": 4,
+  "llm_calls": 2,
+  "latency_ms": 8331.8,
+  "prompt_tokens": 3718,
+  "completion_tokens": 1074,
+  "total_tokens": 4792,
+  "error": null
+}

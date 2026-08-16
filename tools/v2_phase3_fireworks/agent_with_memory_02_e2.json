@@ -1,0 +1,20 @@
+{
+  "case_id": "fireworks_02_e2_event",
+  "arm": "with_memory",
+  "agent_status": "ok",
+  "memory_used": true,
+  "similar_event_count": 1,
+  "agent_assessment": "SUSPICIOUS",
+  "agent_risk_level": "medium",
+  "final_level": "medium",
+  "reasoning_summary": "",
+  "recommended_action": "",
+  "memory_summary": "历史相似事件 FE-M04-004（相似度 0.76）同样为烟雾检测、无火焰、稳定增长、medium 等级，最终状态 ended，支持当前烟雾场景的合理性。",
+  "tool_calls": 5,
+  "llm_calls": 3,
+  "latency_ms": 11713.3,
+  "prompt_tokens": 6923,
+  "completion_tokens": 1606,
+  "total_tokens": 8529,
+  "error": null
+}

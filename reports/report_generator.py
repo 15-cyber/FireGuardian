@@ -37,6 +37,7 @@ from utils.common import (
     ScreenshotRecord,
 )
 from utils.path_manager import PathManager
+from agent.presentation_models import AgentPresentationModel
 
 # 常见中文字体候选（仅检测，不提交字体文件到仓库）
 _FONT_CANDIDATES = [
@@ -132,7 +133,11 @@ class ReportGenerator:
 
     # ======================== 主入口 ========================
 
-    def generate(self, data: EventReportData) -> List[Path]:
+    def generate(
+        self,
+        data: EventReportData,
+        agent_presentation: Optional[AgentPresentationModel] = None,
+    ) -> List[Path]:
         """生成一份事件报告，返回输出文件路径列表"""
         if data is None or data.event is None:
             return []
@@ -154,7 +159,7 @@ class ReportGenerator:
 
         # 1. event.json（机器可读，原子写入）
         json_path = self._write_event_json(event_dir, data, summary, version_info,
-                                           config_snapshot, warnings)
+                                           config_snapshot, warnings, agent_presentation)
         if json_path:
             output.append(json_path)
 
@@ -164,14 +169,16 @@ class ReportGenerator:
 
         # 3. report.md
         md_path = self._write_markdown(event_dir, data, image_map, rec_map, summary,
-                                       version_info, config_snapshot, warnings, trend_rel)
+                                       version_info, config_snapshot, warnings, trend_rel,
+                                       agent_presentation)
         if md_path:
             output.append(md_path)
 
         # 4. report.pdf（无中文字体时明确提示并跳过）
         if "pdf" in self.formats:
             pdf_path = self._write_pdf(event_dir, data, image_map, rec_map, summary,
-                                       version_info, config_snapshot, warnings, trend_rel)
+                                       version_info, config_snapshot, warnings, trend_rel,
+                                       agent_presentation)
             if pdf_path:
                 output.append(pdf_path)
             else:
@@ -414,11 +421,80 @@ class ReportGenerator:
             when = d.generated_at or ""
             lines.append(f"- {when}：Agent 判定 {_level_str(d.danger_level)} —— {d.summary or '无摘要'}")
         return lines or ["- （无时间线数据）"]
+    def _agent_analysis_markdown(self, p: AgentPresentationModel) -> List[str]:
+        """V2 Agent Analysis 的 Markdown 区块（展示层只读格式化）。"""
+        lines = [
+            f"| 项目 | 内容 |",
+            f"|------|------|",
+            f"| Agent Status | {p.status_label} |",
+            f"| Rule Level | {p.rule_level.upper()} |",
+            f"| Rule Score | {p.rule_score} |",
+            f"| Rule Confidence | {p.rule_confidence} |",
+            f"| Agent Assessment | {p.agent_assessment or '-'} |",
+            f"| Agent Risk | {(p.agent_risk_level or '-').upper()} |",
+            f"| Agreement With Rule | {'YES' if p.agreement else 'NO'} |",
+            f"| Memory | {'Used (' + str(p.similar_event_count) + ')' if p.memory_used else 'Not Used'} |",
+            f"| Final Decision | {p.final_level.upper()} |",
+            f"| Override | {'YES' if p.override else 'NO'} |",
+            f"| Requires Review | {'YES' if p.requires_review else 'NO'} |",
+            f"| Latency | {p.latency_ms:.1f}ms |",
+            f"| Tokens | {p.token_usage.get('total_tokens', 0)} |",
+        ]
+        if p.agent_status == "unavailable":
+            lines += ["", "**说明：DeepSeek 不可用，最终决策使用 M7 规则结果。**"]
+        elif p.agent_status == "invalid_output":
+            lines += ["", "**说明：Agent 输出未通过 Schema 校验，系统自动回退 M7。**"]
+        lines += ["", "**Rule Reasons:**", ""]
+        for r in p.rule_reasons:
+            lines.append(f"- {r}")
+        if p.memory_used:
+            lines += ["", "**Memory Evidence:**", "", p.memory_summary or "（无摘要）"]
+            if p.memory_results:
+                lines += ["", "相似事件："]
+                for m in p.memory_results:
+                    lines.append(f"- {m['event_id']}  {m['similarity_score']:.2f}")
+        else:
+            lines += ["", "**Memory: Not Used**"]
+        lines += [
+            "",
+            "**Agent Explanation:**",
+            "",
+            p.reasoning_summary or "（无推理摘要）",
+            "",
+            "**Possible Cause:**",
+            "",
+            p.possible_cause or "暂无明确判断",
+            "",
+            "**Recommended Action:**",
+            "",
+            p.recommended_action or "未给出处置建议，请按当前风险等级执行标准流程",
+            "",
+            "**Uncertainty:**",
+            "",
+            p.uncertainty,
+            "",
+            "**Final Decision (Hybrid):**",
+            "",
+            f"Rule: {p.rule_level.upper()} | Agent: {(p.agent_risk_level or '-').upper()} | Final: {p.final_level.upper()}",
+            "",
+            p.reason or "",
+            "",
+            "**Tools Used:**",
+            "",
+        ]
+        if p.tools_used:
+            for t in p.tools_used:
+                lines.append(f"- {t}")
+        else:
+            lines.append("- None")
+        return lines
+
     # ======================== 输出生成 ========================
 
     def _write_event_json(self, event_dir: Path, data: EventReportData, summary: dict,
                           version_info: dict, config_snapshot: dict,
-                          warnings: List[str]) -> Optional[Path]:
+                          warnings: List[str],
+                          agent_presentation: Optional[AgentPresentationModel] = None) -> Optional[Path]:
         """event.json：机器可读完整事件包（原子写入）"""
         evt = data.event
         payload = {
@@ -426,6 +502,7 @@ class ReportGenerator:
             "metadata": evt.metadata,
             "decisions": [self._decision_to_dict(d) for d in data.decisions],
             "screenshots": [r.to_dict() for r in data.screenshots],
+            "agent_analysis": agent_presentation.to_dict() if agent_presentation else None,
             "system_info": data.system_info,
             "model_info": data.model_info,
             "executive_summary": summary,
@@ -441,7 +518,8 @@ class ReportGenerator:
     def _write_markdown(self, event_dir: Path, data: EventReportData,
                         image_map: Dict[str, str], rec_map: Dict[str, ScreenshotRecord],
                         summary: dict, version_info: dict, config_snapshot: dict,
-                        warnings: List[str], trend_rel: Optional[str]) -> Optional[Path]:
+                        warnings: List[str], trend_rel: Optional[str],
+                        agent_presentation: Optional[AgentPresentationModel] = None) -> Optional[Path]:
         """report.md：人类可读报告"""
         evt = data.event
         status = evt.status.value if hasattr(evt.status, "value") else str(evt.status)
@@ -521,20 +599,25 @@ class ReportGenerator:
             "## 6. Agent 分析",
             "",
         ]
-        if not data.decisions:
-            lines.append("（无决策记录）")
+        if agent_presentation is None:
+            lines += ["**Agent Analysis: Not available for this event.**", ""]
+            lines += ["**Rule Decision (M7):**", ""]
+            if not data.decisions:
+                lines.append("（无决策记录）")
+            else:
+                d = data.decisions[-1]
+                lines.append(f"- 结论摘要：{d.summary or '无'}")
+                lines.append(f"- 危险等级：{_level_str(d.danger_level)}")
+                lines.append(f"- 评分：{d.score} | 可信度：{d.confidence}")
+                lines.append(f"- 决策来源：{d.decision_source}")
+                lines.append("- 判断原因：")
+                for r in d.reasons:
+                    lines.append(f"  - {r}")
+                lines.append("- 应急建议：")
+                for s in d.suggestions:
+                    lines.append(f"  - {s}")
         else:
-            d = data.decisions[-1]
-            lines.append(f"- 结论摘要：{d.summary or '无'}")
-            lines.append(f"- 危险等级：{_level_str(d.danger_level)}")
-            lines.append(f"- 评分：{d.score} | 可信度：{d.confidence}")
-            lines.append(f"- 决策来源：{d.decision_source}")
-            lines.append("- 判断原因：")
-            for r in d.reasons:
-                lines.append(f"  - {r}")
-            lines.append("- 应急建议：")
-            for s in d.suggestions:
-                lines.append(f"  - {s}")
+            lines += self._agent_analysis_markdown(agent_presentation)
         lines += [
             "",
             "## 7. 图片证据",
@@ -586,7 +669,8 @@ class ReportGenerator:
     def _write_pdf(self, event_dir: Path, data: EventReportData,
                    image_map: Dict[str, str], rec_map: Dict[str, ScreenshotRecord],
                    summary: dict, version_info: dict, config_snapshot: dict,
-                   warnings: List[str], trend_rel: Optional[str]) -> Optional[Path]:
+                   warnings: List[str], trend_rel: Optional[str],
+                   agent_presentation: Optional[AgentPresentationModel] = None) -> Optional[Path]:
         """report.pdf：正式文档（封面/摘要/趋势图/配置快照；任何失败都不崩溃，降级为 md+json）"""
         if not self.pdf_available:
             return None
@@ -717,20 +801,60 @@ class ReportGenerator:
 
             # ---- 6. Agent 分析 ----
             story.append(Paragraph("6. Agent 分析", h2))
-            if not data.decisions:
-                story.append(Paragraph("（无决策记录）", body))
+            if agent_presentation is None:
+                story.append(Paragraph("Agent Analysis: Not available for this event.", body))
+                if not data.decisions:
+                    story.append(Paragraph("（无决策记录）", body))
+                else:
+                    d = data.decisions[-1]
+                    story.append(Paragraph(f"结论摘要：{d.summary or '无'}", body))
+                    story.append(Paragraph(
+                        f"危险等级：{_level_str(d.danger_level)} | 评分：{d.score} | 可信度：{d.confidence} | "
+                        f"决策来源：{d.decision_source}", body))
+                    story.append(Paragraph("判断原因：", body))
+                    for r in d.reasons:
+                        story.append(Paragraph(f"· {r}", body))
+                    story.append(Paragraph("应急建议：", body))
+                    for s in d.suggestions:
+                        story.append(Paragraph(f"· {s}", body))
             else:
-                d = data.decisions[-1]
-                story.append(Paragraph(f"结论摘要：{d.summary or '无'}", body))
+                p = agent_presentation
+                story.append(Paragraph(f"Agent Status: {p.status_label}", body))
+                if p.agent_status == "unavailable":
+                    story.append(Paragraph("说明：DeepSeek 不可用，最终决策使用 M7 规则结果。", body))
+                elif p.agent_status == "invalid_output":
+                    story.append(Paragraph("说明：Agent 输出未通过 Schema 校验，系统自动回退 M7。", body))
                 story.append(Paragraph(
-                    f"危险等级：{_level_str(d.danger_level)} | 评分：{d.score} | 可信度：{d.confidence} | "
-                    f"决策来源：{d.decision_source}", body))
-                story.append(Paragraph("判断原因：", body))
-                for r in d.reasons:
+                    f"Rule Decision: {p.rule_level.upper()} | Score: {p.rule_score} | "
+                    f"Confidence: {p.rule_confidence}", body))
+                story.append(Paragraph("Rule Reasons:", body))
+                for r in p.rule_reasons:
                     story.append(Paragraph(f"· {r}", body))
-                story.append(Paragraph("应急建议：", body))
-                for s in d.suggestions:
-                    story.append(Paragraph(f"· {s}", body))
+                story.append(Paragraph(
+                    f"Agent Assessment: {p.agent_assessment or '-'} | Agent Risk: "
+                    f"{(p.agent_risk_level or '-').upper()} | Agreement: "
+                    f"{'YES' if p.agreement else 'NO'}", body))
+                if p.memory_used:
+                    story.append(Paragraph(f"Memory: Used ({p.similar_event_count} similar events)", body))
+                    story.append(Paragraph(p.memory_summary or "（无摘要）", body))
+                    for m in p.memory_results[:5]:
+                        story.append(Paragraph(f"· {m['event_id']}  {m['similarity_score']:.2f}", body))
+                else:
+                    story.append(Paragraph("Memory: Not Used", body))
+                story.append(Paragraph("Agent Explanation:", body))
+                story.append(Paragraph(p.reasoning_summary or "（无推理摘要）", body))
+                story.append(Paragraph(f"Possible Cause: {p.possible_cause}", body))
+                story.append(Paragraph(f"Recommended Action: {p.recommended_action}", body))
+                story.append(Paragraph(f"Uncertainty: {p.uncertainty}", body))
+                story.append(Paragraph(
+                    f"Final Decision: {p.final_level.upper()} "
+                    f"(Rule {p.rule_level.upper()} / Agent {(p.agent_risk_level or '-').upper()})", body))
+                story.append(Paragraph(p.reason or "", body))
+                tools_text = "、".join(p.tools_used) if p.tools_used else "None"
+                story.append(Paragraph(f"Tools Used: {tools_text}", body))
+                story.append(Paragraph(
+                    f"Latency: {p.latency_ms:.1f}ms | Tokens: {p.token_usage.get('total_tokens', 0)}",
+                    caption))
 
             # ---- 7. 图片证据（检查文档改动六：图片说明） ----
             if image_map:

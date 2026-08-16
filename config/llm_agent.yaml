@@ -1,0 +1,56 @@
+# ============================================================
+# FireGuardian V2 DeepSeek Agent 配置（Phase 1）
+#
+# 安全约束：API Key 严禁写入本文件，只能通过环境变量或 .env 读取。
+#   环境变量：
+#     DEEPSEEK_API_KEY   API Key（必填，来自 .env / 系统环境变量）
+#     DEEPSEEK_BASE_URL  API Base URL（可选，默认 https://api.deepseek.com）
+#     DEEPSEEK_MODEL     模型名（可选，默认 deepseek-v4-flash）
+# ============================================================
+
+llm_agent:
+  provider: deepseek
+
+  # ---- API 配置（值优先取环境变量，其次取默认值） ----
+  api_key_env: DEEPSEEK_API_KEY
+  base_url_env: DEEPSEEK_BASE_URL
+  base_url_default: https://api.deepseek.com
+  model_env: DEEPSEEK_MODEL
+  model_default: deepseek-v4-flash
+
+  # ---- 调用行为 ----
+  timeout_seconds: 20
+  retry_attempts: 2              # timeout / 429 / 5xx / 连接错误时的最大重试次数
+  temperature: 0.2
+  max_tokens: 2048
+  response_format: json_object   # 使用 DeepSeek JSON Output
+
+  # ---- Agent 循环 ----
+  max_tool_rounds: 3             # 单事件最大工具调用轮数，防止无限循环
+  max_llm_calls_per_event: 4     # 单事件最大 LLM 调用次数
+
+  # ---- 上下文控制 ----
+  context_limits:
+    max_similar_events: 5        # 相似历史事件最多 5 条
+    history_window_seconds: 30   # 检测历史默认最近 30 秒
+
+  # ---- 日志（Phase 2 起写入） ----
+  logs:
+    decisions_file: logs/agent_decisions.jsonl
+    tool_calls_file: logs/agent_tool_calls.jsonl
+
+  # ---- Agent Memory（Phase 3-A，结构化检索，不引入向量库） ----
+  memory:
+    top_k: 5
+    max_top_k: 10
+    min_similarity: 0.65
+    only_ended_events: true      # 默认只检索已结束历史事件
+    weights:
+      fire_presence: 0.20
+      smoke_presence: 0.20
+      fire_area: 0.15
+      smoke_area: 0.15
+      duration: 0.10
+      risk_level: 0.10
+      confidence: 0.05
+      growth_trend: 0.05

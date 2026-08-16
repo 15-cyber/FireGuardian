@@ -1,0 +1,5 @@
+{"time":"2026-07-10T08:00:00","module":"event_aggregator","event_type":"event_ended","event_id":"FE-B-001","details":{"event_id":"FE-B-001","status":"ended","duration_seconds":3.0,"max_smoke_area_ratio":0.2,"avg_smoke_confidence":0.6,"growth_trend":"stable","metadata":{}}}
+this is not valid json
+{"time":"2026-07-10T08:01:00","module":"event_aggregator","event_type":"event_ended","event_id":"FE-B-002","details":{"event_id":"FE-B-002","status":"ended","duration_seconds":4.0,"max_smoke_area_ratio":0.25,"avg_smoke_confidence":0.65,"growth_trend":"stable","metadata":{}}}
+{"broken": true, "no_details": true}
+[1, 2, 3]

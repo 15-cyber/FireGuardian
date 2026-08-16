@@ -1,0 +1,20 @@
+{
+  "case_id": "fireworks_02_e1_event",
+  "arm": "with_memory",
+  "agent_status": "ok",
+  "memory_used": true,
+  "similar_event_count": 4,
+  "agent_assessment": "UNCERTAIN",
+  "agent_risk_level": "medium",
+  "final_level": "high",
+  "reasoning_summary": "",
+  "recommended_action": "",
+  "memory_summary": "历史相似事件（FE-M04-001/002/003）多为medium等级、烟雾主导（面积45-52%）、火焰面积极小（1-3%）、趋势减弱，与当前烟雾主导特征部分吻合；但当前事件火焰检测数据自相矛盾，无法与历史可靠比对",
+  "tool_calls": 5,
+  "llm_calls": 3,
+  "latency_ms": 10472.8,
+  "prompt_tokens": 7033,
+  "completion_tokens": 1378,
+  "total_tokens": 8411,
+  "error": null
+}

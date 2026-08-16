@@ -1,0 +1,20 @@
+{
+  "case_id": "fireworks_01_e1_event",
+  "arm": "with_memory",
+  "agent_status": "ok",
+  "memory_used": true,
+  "similar_event_count": 1,
+  "agent_assessment": "SUSPICIOUS",
+  "agent_risk_level": "medium",
+  "final_level": "medium",
+  "reasoning_summary": "",
+  "recommended_action": "",
+  "memory_summary": "历史相似事件 FE-M04-004（相似度0.88）同样为无火焰、有烟雾、medium 等级，最终状态为 ended，未升级为高风险。历史证据仅作参考，不能据此断定当前事件性质。",
+  "tool_calls": 4,
+  "llm_calls": 3,
+  "latency_ms": 9076.5,
+  "prompt_tokens": 6315,
+  "completion_tokens": 1107,
+  "total_tokens": 7422,
+  "error": null
+}

@@ -69,3 +69,22 @@ tools/_audit_work/
 /烟火.mp4
 /tmp_task10.txt
 
+# --- 环境变量（含 API Key，严禁入库） ---
+.env
+.env.*
+
+# ---- V2 封板：非源码 / 运行产物 / 大型素材（2026-08-16 封板） ----
+models/*.jsonl
+datasets/v2_negatives/
+/*.docx
+/*.mp4
+/测试视频/
+/火堆.jpg
+/bus.jpg
+tools/baseline_v1_visual_audit.pdf
+tools/v2_phase3_fireworks/representative_frames_*/
+tools/v2_phase4a_output/
+tools/v2_phase4b_screenshots/
+tools/v2_final_demo/
+logs/thinking_eval/
+

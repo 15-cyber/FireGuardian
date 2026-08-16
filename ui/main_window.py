@@ -56,6 +56,7 @@ from PyQt6.QtWidgets import (
 )
 
 from ui.app_controller import UiController
+from ui.agent_panel import AgentAnalysisPanel
 from utils.common import load_config
 
 # ======================== 常量 ========================
@@ -78,6 +79,7 @@ class MainWindow(QMainWindow):
         self._last_qimage = None
         self._last_log_tail: list = []
         self._history_report_paths: dict = {}
+        self._agent_presentations: dict = {}
         self._error_state = False
 
         self._build_ui()
@@ -252,17 +254,19 @@ class MainWindow(QMainWindow):
         self.decision_text.setReadOnly(True)
         self.decision_meta = QLabel("来源: - | 更新: -")
         self.decision_meta.setStyleSheet("color: #666;")
+        self.agent_panel = AgentAnalysisPanel()
         lay.addWidget(self.decision_level_label)
-        lay.addWidget(self.decision_text, 1)
+        lay.addWidget(self.decision_text, 2)
         lay.addWidget(self.decision_meta)
+        lay.addWidget(self.agent_panel, 3)
         return page
 
     def _build_history_panel(self) -> QWidget:
         gb = QGroupBox("事件历史")
         lay = QVBoxLayout(gb)
-        self.history_table = QTableWidget(0, 5)
+        self.history_table = QTableWidget(0, 8)
         self.history_table.setHorizontalHeaderLabels(
-            ["事件编号", "开始时间", "持续时间(s)", "最高危险等级", "报告状态"])
+            ["事件编号", "开始时间", "持续时间(s)", "Rule", "Agent", "Final", "Memory", "报告状态"])
         self.history_table.horizontalHeader().setSectionResizeMode(
             QHeaderView.ResizeMode.Stretch)
         self.history_table.setSelectionBehavior(
@@ -452,6 +456,10 @@ class MainWindow(QMainWindow):
         c.frame_info_ready.connect(self._on_frame_info)
         c.event_ready.connect(self._on_event_ready)
         c.decision_ready.connect(self._on_decision_ready)
+        c.agent_started.connect(self._on_agent_started)
+        c.agent_tool_called.connect(self._on_agent_tool_called)
+        c.agent_completed.connect(self._on_agent_completed)
+        c.agent_failed.connect(self._on_agent_failed)
         c.history_ready.connect(self._on_history_ready)
         c.status_ready.connect(self._on_status_ready)
         c.source_finished.connect(self._on_source_finished)
@@ -609,8 +617,35 @@ class MainWindow(QMainWindow):
             danger_item = QTableWidgetItem(str(item.get("max_danger", "-")))
             danger_item.setForeground(QBrush(QColor(self._level_color(item.get("max_danger")))))
             table.setItem(row, 3, danger_item)
-            table.setItem(row, 4, QTableWidgetItem(item.get("report_status", "")))
+            agent_level = str(item.get("agent_level") or "-")
+            agent_item = QTableWidgetItem(agent_level.upper() if agent_level != "-" else "-")
+            agent_item.setForeground(QBrush(QColor(self._level_color(agent_level))))
+            table.setItem(row, 4, agent_item)
+            final_level = str(item.get("final_level") or "-")
+            final_item = QTableWidgetItem(final_level.upper() if final_level != "-" else "-")
+            final_item.setForeground(QBrush(QColor(self._level_color(final_level))))
+            table.setItem(row, 5, final_item)
+            memory_used = bool(item.get("memory_used", False))
+            similar = int(item.get("similar_event_count", 0) or 0)
+            memory_text = f"Used ({similar})" if memory_used else ("Not Used" if item.get("agent_status") else "-")
+            table.setItem(row, 6, QTableWidgetItem(memory_text))
+            table.setItem(row, 7, QTableWidgetItem(item.get("report_status", "")))
             self._history_report_paths[row] = item.get("report_path", "")
+
+    def _on_agent_started(self, payload):
+        self.agent_panel.set_analyzing(payload)
+
+    def _on_agent_tool_called(self, payload):
+        self.agent_panel.set_tool_called(payload)
+
+    def _on_agent_completed(self, payload):
+        event_id = payload.get("event_id", "")
+        if event_id:
+            self._agent_presentations[event_id] = payload
+        self.agent_panel.set_presentation(payload)
+
+    def _on_agent_failed(self, payload):
+        self.agent_panel.set_failed(payload)
 
     def _on_status_ready(self, payload):
         total = payload.get("total_frames") or 0
@@ -838,6 +873,8 @@ class MainWindow(QMainWindow):
     # ======================== 关闭 ========================
 
     def closeEvent(self, event):
+        if hasattr(self, "status_label"):
+            self.status_label.setText("正在停止Agent...")
         self.controller.shutdown()
         super().closeEvent(event)
 
