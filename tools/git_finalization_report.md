@@ -19,7 +19,8 @@
 | --- | --- | --- |
 | `bb37bb2` | feat: finalize FireGuardian V2 agent pipeline | Agent/Memory/Hybrid/M10/M11 代码、UiController Worker、PresentationModel、prompts、配置、Phase 1~4 测试与报告（77 文件） |
 | `acbe417` | feat: add V2 YOLO optimization and joint evaluation | Phase 5 数据/训练/评估/conf 工具与结果、Phase 6 联合测试、V2.7 闭环演示脚本与报告（20 文件） |
-| `<final_commit>` | docs: finalize FireGuardian V2 technical report | 研发技术总结报告 md/pdf、PDF 构建脚本、本封板报告 |
+| `ab696c3` | docs: finalize FireGuardian V2 technical report | 研发技术总结报告 md/pdf、PDF 构建脚本、本封板报告（初版） |
+| `（本补丁）` | docs: fill git finalization metadata | 回填提交哈希与最终 HEAD（本补丁即为 tag 指向的最终提交） |
 
 ## 4. 每个 commit 的目的
 
@@ -29,7 +30,7 @@
 
 ## 5. 最终 HEAD
 
-见 `git log --oneline --decorate -20`（最终 commit 为 Commit 3）。
+本补丁提交（`git log --oneline --decorate -20` 的最顶端提交，即 `v0.2.0-agent` 指向）。
 
 ## 6. v0.1.0-baseline
 
