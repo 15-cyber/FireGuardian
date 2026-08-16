@@ -1,0 +1,843 @@
+{
+  "v1": {
+    "烟火.mp4": {
+      "video": "烟火.mp4",
+      "fps": 29.96,
+      "total_frames": 576,
+      "processed_frames": 144,
+      "frame_skip": 4,
+      "fire_positive_frames@0.25": 21,
+      "smoke_positive_frames@0.25": 47,
+      "fire_positive_frames@0.5": 7,
+      "smoke_positive_frames@0.5": 10,
+      "fire_max_confidence": 0.6073,
+      "smoke_max_confidence": 0.6622,
+      "fire_max_area_ratio": 0.519118,
+      "smoke_max_area_ratio": 0.718748,
+      "continuous_fire_segments": [
+        {
+          "start": 189,
+          "end": 189,
+          "length": 1
+        },
+        {
+          "start": 197,
+          "end": 197,
+          "length": 1
+        },
+        {
+          "start": 201,
+          "end": 201,
+          "length": 1
+        },
+        {
+          "start": 205,
+          "end": 205,
+          "length": 1
+        },
+        {
+          "start": 209,
+          "end": 209,
+          "length": 1
+        },
+        {
+          "start": 213,
+          "end": 213,
+          "length": 1
+        },
+        {
+          "start": 217,
+          "end": 217,
+          "length": 1
+        }
+      ],
+      "continuous_smoke_segments": [
+        {
+          "start": 129,
+          "end": 129,
+          "length": 1
+        },
+        {
+          "start": 133,
+          "end": 133,
+          "length": 1
+        },
+        {
+          "start": 137,
+          "end": 137,
+          "length": 1
+        },
+        {
+          "start": 141,
+          "end": 141,
+          "length": 1
+        },
+        {
+          "start": 145,
+          "end": 145,
+          "length": 1
+        },
+        {
+          "start": 149,
+          "end": 149,
+          "length": 1
+        },
+        {
+          "start": 153,
+          "end": 153,
+          "length": 1
+        },
+        {
+          "start": 157,
+          "end": 157,
+          "length": 1
+        },
+        {
+          "start": 257,
+          "end": 257,
+          "length": 1
+        },
+        {
+          "start": 321,
+          "end": 321,
+          "length": 1
+        }
+      ]
+    },
+    "me.mp4": {
+      "video": "me.mp4",
+      "fps": 30.0,
+      "total_frames": 182,
+      "processed_frames": 46,
+      "frame_skip": 4,
+      "fire_positive_frames@0.25": 9,
+      "smoke_positive_frames@0.25": 39,
+      "fire_positive_frames@0.5": 2,
+      "smoke_positive_frames@0.5": 28,
+      "fire_max_confidence": 0.6714,
+      "smoke_max_confidence": 0.8595,
+      "fire_max_area_ratio": 0.140334,
+      "smoke_max_area_ratio": 0.444304,
+      "continuous_fire_segments": [
+        {
+          "start": 161,
+          "end": 161,
+          "length": 1
+        },
+        {
+          "start": 177,
+          "end": 177,
+          "length": 1
+        }
+      ],
+      "continuous_smoke_segments": [
+        {
+          "start": 1,
+          "end": 1,
+          "length": 1
+        },
+        {
+          "start": 5,
+          "end": 5,
+          "length": 1
+        },
+        {
+          "start": 9,
+          "end": 9,
+          "length": 1
+        },
+        {
+          "start": 13,
+          "end": 13,
+          "length": 1
+        },
+        {
+          "start": 17,
+          "end": 17,
+          "length": 1
+        },
+        {
+          "start": 21,
+          "end": 21,
+          "length": 1
+        },
+        {
+          "start": 25,
+          "end": 25,
+          "length": 1
+        },
+        {
+          "start": 29,
+          "end": 29,
+          "length": 1
+        },
+        {
+          "start": 33,
+          "end": 33,
+          "length": 1
+        },
+        {
+          "start": 37,
+          "end": 37,
+          "length": 1
+        },
+        {
+          "start": 41,
+          "end": 41,
+          "length": 1
+        },
+        {
+          "start": 45,
+          "end": 45,
+          "length": 1
+        },
+        {
+          "start": 49,
+          "end": 49,
+          "length": 1
+        },
+        {
+          "start": 53,
+          "end": 53,
+          "length": 1
+        },
+        {
+          "start": 57,
+          "end": 57,
+          "length": 1
+        },
+        {
+          "start": 61,
+          "end": 61,
+          "length": 1
+        },
+        {
+          "start": 65,
+          "end": 65,
+          "length": 1
+        },
+        {
+          "start": 69,
+          "end": 69,
+          "length": 1
+        },
+        {
+          "start": 73,
+          "end": 73,
+          "length": 1
+        },
+        {
+          "start": 77,
+          "end": 77,
+          "length": 1
+        },
+        {
+          "start": 85,
+          "end": 85,
+          "length": 1
+        },
+        {
+          "start": 93,
+          "end": 93,
+          "length": 1
+        },
+        {
+          "start": 97,
+          "end": 97,
+          "length": 1
+        },
+        {
+          "start": 101,
+          "end": 101,
+          "length": 1
+        },
+        {
+          "start": 105,
+          "end": 105,
+          "length": 1
+        },
+        {
+          "start": 109,
+          "end": 109,
+          "length": 1
+        },
+        {
+          "start": 113,
+          "end": 113,
+          "length": 1
+        },
+        {
+          "start": 117,
+          "end": 117,
+          "length": 1
+        }
+      ]
+    },
+    "烟花1.mp4": {
+      "video": "烟花1.mp4",
+      "fps": 30.04,
+      "total_frames": 301,
+      "processed_frames": 76,
+      "frame_skip": 4,
+      "fire_positive_frames@0.25": 9,
+      "smoke_positive_frames@0.25": 74,
+      "fire_positive_frames@0.5": 5,
+      "smoke_positive_frames@0.5": 58,
+      "fire_max_confidence": 0.6263,
+      "smoke_max_confidence": 0.8547,
+      "fire_max_area_ratio": 0.10373,
+      "smoke_max_area_ratio": 0.518996,
+      "continuous_fire_segments": [
+        {
+          "start": 241,
+          "end": 241,
+          "length": 1
+        },
+        {
+          "start": 281,
+          "end": 281,
+          "length": 1
+        },
+        {
+          "start": 285,
+          "end": 285,
+          "length": 1
+        },
+        {
+          "start": 289,
+          "end": 289,
+          "length": 1
+        },
+        {
+          "start": 297,
+          "end": 297,
+          "length": 1
+        }
+      ],
+      "continuous_smoke_segments": [
+        {
+          "start": 1,
+          "end": 1,
+          "length": 1
+        },
+        {
+          "start": 5,
+          "end": 5,
+          "length": 1
+        },
+        {
+          "start": 9,
+          "end": 9,
+          "length": 1
+        },
+        {
+          "start": 13,
+          "end": 13,
+          "length": 1
+        },
+        {
+          "start": 17,
+          "end": 17,
+          "length": 1
+        },
+        {
+          "start": 21,
+          "end": 21,
+          "length": 1
+        },
+        {
+          "start": 25,
+          "end": 25,
+          "length": 1
+        },
+        {
+          "start": 29,
+          "end": 29,
+          "length": 1
+        },
+        {
+          "start": 37,
+          "end": 37,
+          "length": 1
+        },
+        {
+          "start": 53,
+          "end": 53,
+          "length": 1
+        },
+        {
+          "start": 57,
+          "end": 57,
+          "length": 1
+        },
+        {
+          "start": 61,
+          "end": 61,
+          "length": 1
+        },
+        {
+          "start": 69,
+          "end": 69,
+          "length": 1
+        },
+        {
+          "start": 73,
+          "end": 73,
+          "length": 1
+        },
+        {
+          "start": 77,
+          "end": 77,
+          "length": 1
+        },
+        {
+          "start": 81,
+          "end": 81,
+          "length": 1
+        },
+        {
+          "start": 85,
+          "end": 85,
+          "length": 1
+        },
+        {
+          "start": 89,
+          "end": 89,
+          "length": 1
+        },
+        {
+          "start": 93,
+          "end": 93,
+          "length": 1
+        },
+        {
+          "start": 97,
+          "end": 97,
+          "length": 1
+        },
+        {
+          "start": 101,
+          "end": 101,
+          "length": 1
+        },
+        {
+          "start": 105,
+          "end": 105,
+          "length": 1
+        },
+        {
+          "start": 109,
+          "end": 109,
+          "length": 1
+        },
+        {
+          "start": 113,
+          "end": 113,
+          "length": 1
+        },
+        {
+          "start": 133,
+          "end": 133,
+          "length": 1
+        },
+        {
+          "start": 141,
+          "end": 141,
+          "length": 1
+        },
+        {
+          "start": 145,
+          "end": 145,
+          "length": 1
+        },
+        {
+          "start": 153,
+          "end": 153,
+          "length": 1
+        },
+        {
+          "start": 157,
+          "end": 157,
+          "length": 1
+        },
+        {
+          "start": 161,
+          "end": 161,
+          "length": 1
+        },
+        {
+          "start": 165,
+          "end": 165,
+          "length": 1
+        },
+        {
+          "start": 169,
+          "end": 169,
+          "length": 1
+        },
+        {
+          "start": 173,
+          "end": 173,
+          "length": 1
+        },
+        {
+          "start": 177,
+          "end": 177,
+          "length": 1
+        },
+        {
+          "start": 181,
+          "end": 181,
+          "length": 1
+        },
+        {
+          "start": 189,
+          "end": 189,
+          "length": 1
+        },
+        {
+          "start": 193,
+          "end": 193,
+          "length": 1
+        },
+        {
+          "start": 197,
+          "end": 197,
+          "length": 1
+        },
+        {
+          "start": 201,
+          "end": 201,
+          "length": 1
+        },
+        {
+          "start": 213,
+          "end": 213,
+          "length": 1
+        },
+        {
+          "start": 229,
+          "end": 229,
+          "length": 1
+        },
+        {
+          "start": 233,
+          "end": 233,
+          "length": 1
+        },
+        {
+          "start": 241,
+          "end": 241,
+          "length": 1
+        },
+        {
+          "start": 245,
+          "end": 245,
+          "length": 1
+        },
+        {
+          "start": 249,
+          "end": 249,
+          "length": 1
+        },
+        {
+          "start": 253,
+          "end": 253,
+          "length": 1
+        },
+        {
+          "start": 257,
+          "end": 257,
+          "length": 1
+        },
+        {
+          "start": 261,
+          "end": 261,
+          "length": 1
+        },
+        {
+          "start": 265,
+          "end": 265,
+          "length": 1
+        },
+        {
+          "start": 269,
+          "end": 269,
+          "length": 1
+        },
+        {
+          "start": 273,
+          "end": 273,
+          "length": 1
+        },
+        {
+          "start": 277,
+          "end": 277,
+          "length": 1
+        },
+        {
+          "start": 281,
+          "end": 281,
+          "length": 1
+        },
+        {
+          "start": 285,
+          "end": 285,
+          "length": 1
+        },
+        {
+          "start": 289,
+          "end": 289,
+          "length": 1
+        },
+        {
+          "start": 293,
+          "end": 293,
+          "length": 1
+        },
+        {
+          "start": 297,
+          "end": 297,
+          "length": 1
+        },
+        {
+          "start": 301,
+          "end": 301,
+          "length": 1
+        }
+      ]
+    },
+    "烟花2.mp4": {
+      "video": "烟花2.mp4",
+      "fps": 30.03,
+      "total_frames": 446,
+      "processed_frames": 112,
+      "frame_skip": 4,
+      "fire_positive_frames@0.25": 16,
+      "smoke_positive_frames@0.25": 48,
+      "fire_positive_frames@0.5": 4,
+      "smoke_positive_frames@0.5": 7,
+      "fire_max_confidence": 0.8193,
+      "smoke_max_confidence": 0.8209,
+      "fire_max_area_ratio": 0.781259,
+      "smoke_max_area_ratio": 0.614754,
+      "continuous_fire_segments": [
+        {
+          "start": 37,
+          "end": 37,
+          "length": 1
+        },
+        {
+          "start": 93,
+          "end": 93,
+          "length": 1
+        },
+        {
+          "start": 177,
+          "end": 177,
+          "length": 1
+        },
+        {
+          "start": 257,
+          "end": 257,
+          "length": 1
+        }
+      ],
+      "continuous_smoke_segments": [
+        {
+          "start": 17,
+          "end": 17,
+          "length": 1
+        },
+        {
+          "start": 77,
+          "end": 77,
+          "length": 1
+        },
+        {
+          "start": 89,
+          "end": 89,
+          "length": 1
+        },
+        {
+          "start": 145,
+          "end": 145,
+          "length": 1
+        },
+        {
+          "start": 189,
+          "end": 189,
+          "length": 1
+        },
+        {
+          "start": 301,
+          "end": 301,
+          "length": 1
+        },
+        {
+          "start": 429,
+          "end": 429,
+          "length": 1
+        }
+      ]
+    }
+  },
+  "v2": {
+    "烟火.mp4": {
+      "video": "烟火.mp4",
+      "fps": 29.96,
+      "total_frames": 576,
+      "processed_frames": 144,
+      "frame_skip": 4,
+      "fire_positive_frames@0.25": 29,
+      "smoke_positive_frames@0.25": 49,
+      "fire_positive_frames@0.5": 7,
+      "smoke_positive_frames@0.5": 9,
+      "fire_max_confidence": 0.759,
+      "smoke_max_confidence": 0.5861,
+      "fire_max_area_ratio": 0.520794,
+      "smoke_max_area_ratio": 0.717705,
+      "continuous_fire_segments": [
+        {
+          "start": 133,
+          "end": 133,
+          "length": 1
+        },
+        {
+          "start": 137,
+          "end": 137,
+          "length": 1
+        },
+        {
+          "start": 141,
+          "end": 141,
+          "length": 1
+        },
+        {
+          "start": 145,
+          "end": 145,
+          "length": 1
+        },
+        {
+          "start": 217,
+          "end": 217,
+          "length": 1
+        },
+        {
+          "start": 221,
+          "end": 221,
+          "length": 1
+        },
+        {
+          "start": 273,
+          "end": 273,
+          "length": 1
+        }
+      ],
+      "continuous_smoke_segments": [
+        {
+          "start": 9,
+          "end": 9,
+          "length": 1
+        },
+        {
+          "start": 157,
+          "end": 157,
+          "length": 1
+        },
+        {
+          "start": 261,
+          "end": 261,
+          "length": 1
+        },
+        {
+          "start": 265,
+          "end": 265,
+          "length": 1
+        },
+        {
+          "start": 313,
+          "end": 313,
+          "length": 1
+        },
+        {
+          "start": 317,
+          "end": 317,
+          "length": 1
+        },
+        {
+          "start": 321,
+          "end": 321,
+          "length": 1
+        },
+        {
+          "start": 325,
+          "end": 325,
+          "length": 1
+        },
+        {
+          "start": 497,
+          "end": 497,
+          "length": 1
+        }
+      ]
+    },
+    "me.mp4": {
+      "video": "me.mp4",
+      "fps": 30.0,
+      "total_frames": 182,
+      "processed_frames": 46,
+      "frame_skip": 4,
+      "fire_positive_frames@0.25": 1,
+      "smoke_positive_frames@0.25": 2,
+      "fire_positive_frames@0.5": 1,
+      "smoke_positive_frames@0.5": 0,
+      "fire_max_confidence": 0.525,
+      "smoke_max_confidence": 0.3702,
+      "fire_max_area_ratio": 0.009154,
+      "smoke_max_area_ratio": 0.291633,
+      "continuous_fire_segments": [
+        {
+          "start": 169,
+          "end": 169,
+          "length": 1
+        }
+      ],
+      "continuous_smoke_segments": []
+    },
+    "烟花1.mp4": {
+      "video": "烟花1.mp4",
+      "fps": 30.04,
+      "total_frames": 301,
+      "processed_frames": 76,
+      "frame_skip": 4,
+      "fire_positive_frames@0.25": 2,
+      "smoke_positive_frames@0.25": 1,
+      "fire_positive_frames@0.5": 0,
+      "smoke_positive_frames@0.5": 0,
+      "fire_max_confidence": 0.334,
+      "smoke_max_confidence": 0.3544,
+      "fire_max_area_ratio": 0.022306,
+      "smoke_max_area_ratio": 0.108524,
+      "continuous_fire_segments": [],
+      "continuous_smoke_segments": []
+    },
+    "烟花2.mp4": {
+      "video": "烟花2.mp4",
+      "fps": 30.03,
+      "total_frames": 446,
+      "processed_frames": 112,
+      "frame_skip": 4,
+      "fire_positive_frames@0.25": 3,
+      "smoke_positive_frames@0.25": 2,
+      "fire_positive_frames@0.5": 0,
+      "smoke_positive_frames@0.5": 0,
+      "fire_max_confidence": 0.4823,
+      "smoke_max_confidence": 0.4163,
+      "fire_max_area_ratio": 0.348621,
+      "smoke_max_area_ratio": 0.310909,
+      "continuous_fire_segments": [],
+      "continuous_smoke_segments": []
+    }
+  }
+}

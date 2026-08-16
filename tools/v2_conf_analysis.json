@@ -1,0 +1,68 @@
+{
+  "test_set": {
+    "images": 3000,
+    "negative": 1190
+  },
+  "comparison": [
+    {
+      "model": "v1_baseline",
+      "mAP50": 0.7325,
+      "mAP50-95": 0.4491,
+      "precision": 0.7456,
+      "recall": 0.6419,
+      "negative_fp": {
+        "0.25": {
+          "image_level_fp_rate": 0.0563,
+          "fp_fire_images": 23,
+          "fp_smoke_images": 44
+        },
+        "0.4": {
+          "image_level_fp_rate": 0.037,
+          "fp_fire_images": 12,
+          "fp_smoke_images": 32
+        },
+        "0.5": {
+          "image_level_fp_rate": 0.0261,
+          "fp_fire_images": 7,
+          "fp_smoke_images": 24
+        }
+      },
+      "f1@0.25": 0.6899
+    },
+    {
+      "model": "v2_15k",
+      "mAP50": 0.7161,
+      "mAP50-95": 0.4334,
+      "precision": 0.7397,
+      "recall": 0.6356,
+      "negative_fp": {
+        "0.25": {
+          "image_level_fp_rate": 0.0252,
+          "fp_fire_images": 16,
+          "fp_smoke_images": 14
+        },
+        "0.4": {
+          "image_level_fp_rate": 0.0134,
+          "fp_fire_images": 7,
+          "fp_smoke_images": 9
+        },
+        "0.5": {
+          "image_level_fp_rate": 0.0084,
+          "fp_fire_images": 5,
+          "fp_smoke_images": 5
+        }
+      },
+      "f1@0.25": 0.6837
+    }
+  ],
+  "note": "V1 与 V2 在同一 v2 test 集（无泄漏）上评估；V1 基线原报告为旧泄漏测试集，不直接可比。",
+  "recommendation": {
+    "production_conf": 0.5,
+    "reason": "V2 在 conf=0.50 时图级误报率 0.84%（V1 同测试集 2.61%），且保持生产默认不变更符合误报优先策略；如需更高召回可下调至 0.25（误报 2.52%）。",
+    "alternative": {
+      "conf_0_25_fp_rate": 0.0252,
+      "conf_0_40_fp_rate": 0.0134,
+      "conf_0_50_fp_rate": 0.0084
+    }
+  }
+}

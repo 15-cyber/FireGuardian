@@ -1,0 +1,60 @@
+{
+  "dataset_root": "F:\\火焰数据集\\Dataset",
+  "pool_images": 104969,
+  "excluded_out_of_range": 288,
+  "clips": 99730,
+  "assigned": {
+    "train": 14276,
+    "val": 2890,
+    "test": 2869
+  },
+  "remaining": {
+    "train": {
+      "negative": 0,
+      "fire_only": 0,
+      "smoke_only": 0,
+      "both": 0
+    },
+    "val": {
+      "negative": 0,
+      "fire_only": 0,
+      "smoke_only": 0,
+      "both": 0
+    },
+    "test": {
+      "negative": 0,
+      "fire_only": 0,
+      "smoke_only": 0,
+      "both": 0
+    }
+  },
+  "unused_clips": 79695,
+  "hard_negatives_added": {
+    "train": 66,
+    "val": 0
+  },
+  "checks": {
+    "clip_split_disjoint": true,
+    "train": 15066,
+    "val": 3000,
+    "test": 3000,
+    "category_train": {
+      "negative": 6012,
+      "smoke_only": 3747,
+      "fire_only": 2106,
+      "both": 3201
+    },
+    "category_val": {
+      "negative": 1188,
+      "smoke_only": 749,
+      "fire_only": 423,
+      "both": 640
+    },
+    "category_test": {
+      "negative": 1190,
+      "fire_only": 435,
+      "both": 626,
+      "smoke_only": 749
+    }
+  }
+}

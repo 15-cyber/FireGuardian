@@ -1,0 +1,7 @@
+train: v2_15k_train.txt
+val: v2_15k_val.txt
+test: v2_15k_test.txt
+nc: 2
+names:
+  0: fire
+  1: smoke

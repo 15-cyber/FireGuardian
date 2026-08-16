@@ -1,0 +1,121 @@
+{
+  "model": "E:\\Codex项目\\FireGuardian\\models\\best.pt",
+  "model_names": {
+    "0": "fire",
+    "1": "smoke"
+  },
+  "test_set": {
+    "images": 3000,
+    "negative": 1190
+  },
+  "eval_conf": 0.25,
+  "overall": {
+    "precision": 0.7456,
+    "recall": 0.6419,
+    "tp": 2646,
+    "fp": 903,
+    "fn": 1476
+  },
+  "mAP50": {
+    "fire": 0.6875282113399966,
+    "smoke": 0.7775340394099559,
+    "all": 0.7325311253749762
+  },
+  "mAP50-95": {
+    "fire": 0.3805844193482572,
+    "smoke": 0.5176404887664995,
+    "all": 0.4491124540573783
+  },
+  "per_class": {
+    "fire": {
+      "precision": 0.7098,
+      "recall": 0.6077,
+      "tp": 1492,
+      "fp": 610,
+      "fn": 963
+    },
+    "smoke": {
+      "precision": 0.7975,
+      "recall": 0.6923,
+      "tp": 1154,
+      "fp": 293,
+      "fn": 513
+    }
+  },
+  "confusion_matrix": {
+    "fire": {
+      "fire": 1012,
+      "smoke": 521,
+      "negative": 16
+    },
+    "smoke": {
+      "fire": 601,
+      "smoke": 1211,
+      "negative": 43
+    },
+    "negative": {
+      "fire": 23,
+      "smoke": 44,
+      "negative": 1123
+    }
+  },
+  "negative_fp": {
+    "negative_total": 1190,
+    "thresholds": {
+      "0.25": {
+        "fp_fire_images": 23,
+        "fp_smoke_images": 44,
+        "fp_both_images": 0,
+        "fp_fire_rate": 0.0193,
+        "fp_smoke_rate": 0.037,
+        "image_level_fp_rate": 0.0563,
+        "avg_fp_boxes_per_image": 0.066,
+        "max_fp_conf_fire": 0.7423,
+        "max_fp_conf_smoke": 0.8688
+      },
+      "0.4": {
+        "fp_fire_images": 12,
+        "fp_smoke_images": 32,
+        "fp_both_images": 0,
+        "fp_fire_rate": 0.0101,
+        "fp_smoke_rate": 0.0269,
+        "image_level_fp_rate": 0.037,
+        "avg_fp_boxes_per_image": 0.04,
+        "max_fp_conf_fire": 0.7423,
+        "max_fp_conf_smoke": 0.8688
+      },
+      "0.5": {
+        "fp_fire_images": 7,
+        "fp_smoke_images": 24,
+        "fp_both_images": 0,
+        "fp_fire_rate": 0.0059,
+        "fp_smoke_rate": 0.0202,
+        "image_level_fp_rate": 0.0261,
+        "avg_fp_boxes_per_image": 0.029,
+        "max_fp_conf_fire": 0.7423,
+        "max_fp_conf_smoke": 0.8688
+      }
+    }
+  },
+  "error_cases": {
+    "fp_fire": 38,
+    "fp_smoke": 64,
+    "fn_fire": 49,
+    "fn_smoke": 164,
+    "low_conf": 437
+  },
+  "error_examples_saved": {
+    "fp_fire": 38,
+    "fp_smoke": 50,
+    "fn_fire": 49,
+    "fn_smoke": 50,
+    "low_conf": 50
+  },
+  "curves": {
+    "f1_curve.png": "E:\\Codex项目\\FireGuardian\\runs\\v2_model\\v2_15k\\eval_curves\\f1_curve.png",
+    "precision_curve.png": "E:\\Codex项目\\FireGuardian\\runs\\v2_model\\v2_15k\\eval_curves\\precision_curve.png",
+    "pr_curve.png": "E:\\Codex项目\\FireGuardian\\runs\\v2_model\\v2_15k\\eval_curves\\pr_curve.png",
+    "recall_curve.png": "E:\\Codex项目\\FireGuardian\\runs\\v2_model\\v2_15k\\eval_curves\\recall_curve.png"
+  },
+  "duration_seconds": 146.2
+}

@@ -1,0 +1,214 @@
+[
+  {
+    "label": "real_fire",
+    "video": "烟火.mp4",
+    "fps": 29.96,
+    "total_frames": 576,
+    "processed_frames": 144,
+    "frame_skip": 4,
+    "fire_positive_frames@0.25": 29,
+    "smoke_positive_frames@0.25": 49,
+    "fire_positive_frames@0.5": 7,
+    "smoke_positive_frames@0.5": 9,
+    "fire_max_confidence": 0.759,
+    "smoke_max_confidence": 0.5861,
+    "fire_max_area_ratio": 0.520794,
+    "smoke_max_area_ratio": 0.717705,
+    "continuous_fire_segments": [
+      {
+        "start": 133,
+        "end": 133,
+        "length": 1
+      },
+      {
+        "start": 137,
+        "end": 137,
+        "length": 1
+      },
+      {
+        "start": 141,
+        "end": 141,
+        "length": 1
+      },
+      {
+        "start": 145,
+        "end": 145,
+        "length": 1
+      },
+      {
+        "start": 217,
+        "end": 217,
+        "length": 1
+      },
+      {
+        "start": 221,
+        "end": 221,
+        "length": 1
+      },
+      {
+        "start": 273,
+        "end": 273,
+        "length": 1
+      }
+    ],
+    "continuous_smoke_segments": [
+      {
+        "start": 9,
+        "end": 9,
+        "length": 1
+      },
+      {
+        "start": 157,
+        "end": 157,
+        "length": 1
+      },
+      {
+        "start": 261,
+        "end": 261,
+        "length": 1
+      },
+      {
+        "start": 265,
+        "end": 265,
+        "length": 1
+      },
+      {
+        "start": 313,
+        "end": 313,
+        "length": 1
+      },
+      {
+        "start": 317,
+        "end": 317,
+        "length": 1
+      },
+      {
+        "start": 321,
+        "end": 321,
+        "length": 1
+      },
+      {
+        "start": 325,
+        "end": 325,
+        "length": 1
+      },
+      {
+        "start": 497,
+        "end": 497,
+        "length": 1
+      }
+    ],
+    "agent": {
+      "event_id": "P6-real_fire-烟火.mp4",
+      "agent_status": "ok",
+      "assessment": "CONFIRMED_RISK",
+      "agent_level": "medium",
+      "final_level": "high",
+      "memory_used": false,
+      "similar_count": 0,
+      "latency_ms": 7491.2,
+      "tokens": 4478,
+      "llm_calls": 2,
+      "tool_calls": 3
+    }
+  },
+  {
+    "label": "fireworks_me",
+    "video": "me.mp4",
+    "fps": 30.0,
+    "total_frames": 182,
+    "processed_frames": 46,
+    "frame_skip": 4,
+    "fire_positive_frames@0.25": 1,
+    "smoke_positive_frames@0.25": 2,
+    "fire_positive_frames@0.5": 1,
+    "smoke_positive_frames@0.5": 0,
+    "fire_max_confidence": 0.525,
+    "smoke_max_confidence": 0.3702,
+    "fire_max_area_ratio": 0.009154,
+    "smoke_max_area_ratio": 0.291633,
+    "continuous_fire_segments": [
+      {
+        "start": 169,
+        "end": 169,
+        "length": 1
+      }
+    ],
+    "continuous_smoke_segments": [],
+    "agent": {
+      "event_id": "P6-fireworks_me-me.mp4",
+      "agent_status": "invalid_output",
+      "assessment": null,
+      "agent_level": null,
+      "final_level": "medium",
+      "memory_used": false,
+      "similar_count": 0,
+      "latency_ms": 11543.2,
+      "tokens": 5473,
+      "llm_calls": 2,
+      "tool_calls": 0
+    }
+  },
+  {
+    "label": "fireworks1",
+    "video": "烟花1.mp4",
+    "fps": 30.04,
+    "total_frames": 301,
+    "processed_frames": 76,
+    "frame_skip": 4,
+    "fire_positive_frames@0.25": 2,
+    "smoke_positive_frames@0.25": 1,
+    "fire_positive_frames@0.5": 0,
+    "smoke_positive_frames@0.5": 0,
+    "fire_max_confidence": 0.334,
+    "smoke_max_confidence": 0.3544,
+    "fire_max_area_ratio": 0.022306,
+    "smoke_max_area_ratio": 0.108524,
+    "continuous_fire_segments": [],
+    "continuous_smoke_segments": [],
+    "agent": {
+      "event_id": "P6-fireworks1-烟花1.mp4",
+      "agent_status": "ok",
+      "assessment": "UNCERTAIN",
+      "agent_level": "medium",
+      "final_level": "medium",
+      "memory_used": true,
+      "similar_count": 0,
+      "latency_ms": 14024.9,
+      "tokens": 8505,
+      "llm_calls": 3,
+      "tool_calls": 5
+    }
+  },
+  {
+    "label": "fireworks2",
+    "video": "烟花2.mp4",
+    "fps": 30.03,
+    "total_frames": 446,
+    "processed_frames": 112,
+    "frame_skip": 4,
+    "fire_positive_frames@0.25": 3,
+    "smoke_positive_frames@0.25": 2,
+    "fire_positive_frames@0.5": 0,
+    "smoke_positive_frames@0.5": 0,
+    "fire_max_confidence": 0.4823,
+    "smoke_max_confidence": 0.4163,
+    "fire_max_area_ratio": 0.348621,
+    "smoke_max_area_ratio": 0.310909,
+    "continuous_fire_segments": [],
+    "continuous_smoke_segments": [],
+    "agent": {
+      "event_id": "P6-fireworks2-烟花2.mp4",
+      "agent_status": "ok",
+      "assessment": "SUSPICIOUS",
+      "agent_level": "medium",
+      "final_level": "high",
+      "memory_used": true,
+      "similar_count": 0,
+      "latency_ms": 17504.2,
+      "tokens": 8768,
+      "llm_calls": 3,
+      "tool_calls": 7
+    }
+  }
+]
