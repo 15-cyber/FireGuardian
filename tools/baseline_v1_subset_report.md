@@ -1,7 +1,7 @@
 # FireGuardian Baseline V1 数据子集构建报告
 
 - 工具: `tools/build_baseline_v1_subset.py`
-- 数据源: `F:\火焰数据集\Dataset`
+- 数据源: `DATASET_ROOT`
 - 审计报告: `tools\dataset_audit.json`
 - 生成时间: 2026-08-02T17:08:48 | 耗时: 541.5s
 - 随机种子: 42 | 并行 worker: 8

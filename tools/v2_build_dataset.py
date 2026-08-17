@@ -3,7 +3,7 @@
 FireGuardian V2 Phase 5-1 - 数据集重划分（按片段分组，消除跨集合泄漏）
 
 做法：
-  1. 扫描 F:\火焰数据集\Dataset（train/valid/test 全部图像）
+  1. 扫描 DATASET_ROOT（train/valid/test 全部图像）
   2. 用 dataset_audit.json 的 exact_duplicates + near_duplicates(<=8)
      做 union-find 片段分组（同一片段不跨集合）
   3. 排除越界框图片
@@ -167,7 +167,7 @@ def _greedy_split(clips, cat_counts, targets, rng):
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root", default=r"F:\火焰数据集\Dataset")
+    parser.add_argument("--root", default=r"DATASET_ROOT")
     parser.add_argument("--audit", default=str(_ROOT / "tools" / "dataset_audit.json"))
     parser.add_argument("--negatives-dir", default=str(_ROOT / "datasets" / "v2_negatives"))
     parser.add_argument("--out", default=str(_ROOT / "datasets"))

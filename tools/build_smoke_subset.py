@@ -49,7 +49,7 @@ LABEL_EXT = '.txt'
 CLASS_NAMES = {0: 'fire', 1: 'smoke'}
 CATEGORIES = ('fire_only', 'smoke_only', 'both', 'negative')
 CATEGORY_RATIOS = {'fire_only': 0.30, 'smoke_only': 0.30, 'both': 0.20, 'negative': 0.20}
-DEFAULT_ROOT = r'F:/火焰数据集/Dataset'
+DEFAULT_ROOT = r'DATASET_ROOT'
 DEFAULT_TARGET = {'train': 3000, 'valid': 600}
 EPS = 1e-4
 

@@ -17,7 +17,7 @@ model:
 
 # ---------- 数据集配置 ----------
 dataset:
-  path: F:\火焰数据集\Dataset
+  path: /path/to/your/dataset      # 原始数据集不随仓库发布，请替换为本地数据集路径
   train_dir: train
   valid_dir: valid
   test_dir: test
@@ -58,7 +58,7 @@ video_detect:
 
 # ---------- Validation Simulator 配置 (M5) ----------
 simulator:
-  dataset_path: "F:/火焰数据集/Dataset/valid/images"
+  dataset_path: "/path/to/your/dataset/valid/images"
   interval_seconds: 0.5           # 帧间隔（秒），对应 2 FPS
   mode: "sequential"              # 播放模式: sequential / random
   loop: false                     # 是否循环播放

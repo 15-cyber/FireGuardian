@@ -1,7 +1,7 @@
 {
   "meta": {
     "tool": "tools/build_baseline_v1_subset.py",
-    "dataset_root": "F:\\火焰数据集\\Dataset",
+    "dataset_root": "DATASET_ROOT",
     "audit_json": "tools\\dataset_audit.json",
     "generated_at": "2026-08-02T17:08:48",
     "duration_seconds": 541.5,

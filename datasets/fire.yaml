@@ -2,7 +2,7 @@
 # 用于 Ultralytics YOLO 训练
 # 路径采用相对于该文件的路径
 
-path: F:\火焰数据集\Dataset  # 数据集根目录
+path: DATASET_ROOT  # 数据集根目录
 
 train: train/images   # 训练集图片路径（相对于 path）
 val: valid/images     # 验证集图片路径

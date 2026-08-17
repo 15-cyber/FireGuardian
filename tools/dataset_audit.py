@@ -20,7 +20,7 @@ FireGuardian - 独立数据集审计工具 (Dataset Audit Tool)
 
 用法：
   python tools/dataset_audit.py                                    # 默认数据集
-  python tools/dataset_audit.py --dataset-root "F:/火焰数据集/Dataset"
+  python tools/dataset_audit.py --dataset-root "DATASET_ROOT"
   python tools/dataset_audit.py --phash                            # 启用近似重复检测
   python tools/dataset_audit.py --limit 200                        # 每集合仅扫描前 200 个（测试用）
   python tools/dataset_audit.py --output-dir tools --workers 8
@@ -47,7 +47,7 @@ LABEL_EXT = '.txt'
 ALLOWED_CLASSES = {0, 1}
 EPS = 1e-4  # 浮点容差
 TOOL_VERSION = '1.0.0'
-DEFAULT_ROOT = r'F:/火焰数据集/Dataset'
+DEFAULT_ROOT = r'DATASET_ROOT'
 DEFAULT_SPLITS = ('train', 'valid', 'test')
 
 # 本数据集文件名前缀与标签内容的约定（仅供参考，不影响结论）

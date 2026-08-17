@@ -1,5 +1,5 @@
 {
-  "model": "E:\\Codex项目\\FireGuardian\\models\\best.pt",
+  "model": "\models\\best.pt",
   "model_names": {
     "0": "fire",
     "1": "smoke"
@@ -112,10 +112,10 @@
     "low_conf": 50
   },
   "curves": {
-    "f1_curve.png": "E:\\Codex项目\\FireGuardian\\runs\\v2_model\\v2_15k\\eval_curves\\f1_curve.png",
-    "precision_curve.png": "E:\\Codex项目\\FireGuardian\\runs\\v2_model\\v2_15k\\eval_curves\\precision_curve.png",
-    "pr_curve.png": "E:\\Codex项目\\FireGuardian\\runs\\v2_model\\v2_15k\\eval_curves\\pr_curve.png",
-    "recall_curve.png": "E:\\Codex项目\\FireGuardian\\runs\\v2_model\\v2_15k\\eval_curves\\recall_curve.png"
+    "f1_curve.png": "\runs\\v2_model\\v2_15k\\eval_curves\\f1_curve.png",
+    "precision_curve.png": "\runs\\v2_model\\v2_15k\\eval_curves\\precision_curve.png",
+    "pr_curve.png": "\runs\\v2_model\\v2_15k\\eval_curves\\pr_curve.png",
+    "recall_curve.png": "\runs\\v2_model\\v2_15k\\eval_curves\\recall_curve.png"
   },
   "duration_seconds": 146.2
 }

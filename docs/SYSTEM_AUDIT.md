@@ -62,7 +62,7 @@
 
 4. **输入对象及字段**
    - 配置输入：`config/config.yaml`（YAML 字典）。
-   - `DataManager` 输入：数据集根目录（配置为 `F:\火焰数据集\Dataset`）与 `datasets/fire.yaml` 的类别名（`0: fire, 1: smoke`）。
+   - `DataManager` 输入：数据集根目录（配置为 `DATASET_ROOT`）与 `datasets/fire.yaml` 的类别名（`0: fire, 1: smoke`）。
 
 5. **输出对象及字段**
    - `load_config()` → `dict`（全部配置段）。
@@ -116,7 +116,7 @@
    - `YOLOTrainer`：`train()`（返回 best 模型路径）、`request_stop()`、`plot_metrics()`。
    - `TrainingStopped` 异常：协作式停止，在 epoch 回调边界安全退出，由 GUI 捕获。
    - 每 epoch 回调收集 loss / precision / recall / mAP50 / mAP50-95，并维护 `_metrics_history`。
-   - 默认数据集 `datasets/fire.yaml`：`path=F:\火焰数据集\Dataset`，`nc=2`，`names: {0: fire, 1: smoke}`。
+   - 默认数据集 `datasets/fire.yaml`：`path=DATASET_ROOT`，`nc=2`，`names: {0: fire, 1: smoke}`。
    - 常量：`_MODEL_SOURCE = 根目录/yolo11n.pt`，`_MODEL_TARGET_DIR = models/`。
 
 4. **输入对象及字段**
@@ -289,7 +289,7 @@
    - `utils/common`、M3 检测器（依赖注入）、`cv2` / `numpy`。
 
 7. **使用的 config.yaml 配置项**
-   - `simulator.dataset_path=F:/火焰数据集/Dataset/valid/images`、`interval_seconds=0.5`、`mode=sequential`、`loop=false`、`max_frames=null`、`supported_extensions`、`output_dir=runs/simulator`；`dataset.path`（回退）。
+   - `simulator.dataset_path=DATASET_ROOT/valid/images`、`interval_seconds=0.5`、`mode=sequential`、`loop=false`、`max_frames=null`、`supported_extensions`、`output_dir=runs/simulator`；`dataset.path`（回退）。
 
 8. **对外接口、回调或 Qt Signal**
    - 方法：`start/pause/resume/stop/next_frame/reset/get_statistics`；回调：`on_frame(frame_data, detection)`、`on_progress(current, total, percent)`、`on_error(frame_id, image_path, error)`、`on_complete(stats)`。

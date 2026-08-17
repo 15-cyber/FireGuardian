@@ -32,7 +32,7 @@ if str(_ROOT) not in sys.path:
 os.environ.setdefault("YOLO_CONFIG_DIR", str(_ROOT / ".venv"))
 
 # 数据集（与 datasets/fire_smoke_smoke.yaml 一致）
-_DATASET_ROOT = Path(r"F:\火焰数据集\Dataset")
+_DATASET_ROOT = Path(r"DATASET_ROOT")
 _VAL_IMAGES = _DATASET_ROOT / "valid" / "images"
 _VAL_LABELS = _DATASET_ROOT / "valid" / "labels"
 _SMOKE_VAL_TXT = _ROOT / "datasets" / "smoke_val.txt"

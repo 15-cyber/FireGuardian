@@ -1,6 +1,6 @@
 {
   "seed": 42,
-  "best_path": "E:\\Codex项目\\FireGuardian\\models\\best.pt",
+  "best_path": "\models\\best.pt",
   "total_seconds": 312.0,
   "epochs": 3,
   "per_epoch": [

@@ -8,7 +8,7 @@
 
 ## 1. 数据准备（5-1：无泄漏重划分）
 
-- 全量扫描 F:\火焰数据集\Dataset：105,257 张（train 73,698 / valid 10,517 / test 21,042）；
+- 全量扫描 DATASET_ROOT：105,257 张（train 73,698 / valid 10,517 / test 21,042）；
 - 片段级 union-find 分组：基于审计 JSON 的 exact_duplicates（1,706 组）+
   near_duplicates（distance ≤ 8）合并为 99,730 个片段（最大片段 212），
   确保同一片段（含跨集合重复/近重复）整体归属单一集合；

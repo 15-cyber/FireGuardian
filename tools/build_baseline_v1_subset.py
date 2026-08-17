@@ -3,7 +3,7 @@
 FireGuardian Baseline V1 - 中等规模数据子集构建器 v3
 ============================================================
 按《9.FireGuardian Baseline V1 中等规模训练与精度评估任务.docx》执行：
-- 数据源: F:\火焰数据集\Dataset (train/valid/test)
+- 数据源: DATASET_ROOT (train/valid/test)
 - 目标: train 15000 / val 3000 / test 3000，共 21000
 - 分层: fire-only 30% / smoke-only 30% / fire+smoke 20% / 负样本 20%
 - 过滤: 排除审计报告中越界框对应的 288 张图片；损坏/标签异常（审计为 0）
@@ -36,7 +36,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 _PROJECT_ROOT = os.path.dirname(_THIS_DIR)
-DEFAULT_ROOT = r"F:/火焰数据集/Dataset"
+DEFAULT_ROOT = r"DATASET_ROOT"
 DEFAULT_AUDIT = os.path.join(_PROJECT_ROOT, "tools", "dataset_audit.json")
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".bmp"}
 CATEGORIES = ("fire_only", "smoke_only", "both", "negative")

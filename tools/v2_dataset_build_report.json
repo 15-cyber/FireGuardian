@@ -1,5 +1,5 @@
 {
-  "dataset_root": "F:\\火焰数据集\\Dataset",
+  "dataset_root": "DATASET_ROOT",
   "pool_images": 104969,
   "excluded_out_of_range": 288,
   "clips": 99730,

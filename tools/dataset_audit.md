@@ -1,6 +1,6 @@
 # FireGuardian 数据集审计报告
 
-- 数据集根目录：`F:\火焰数据集\Dataset`
+- 数据集根目录：`DATASET_ROOT`
 - 生成时间：2026-08-01T17:13:08
 - 工具：`tools/dataset_audit.py` v1.0.0 | 扫描耗时 1988.5s | 进程数 8
 - 感知哈希：启用（阈值 16）

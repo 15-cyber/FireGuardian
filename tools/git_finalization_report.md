@@ -56,7 +56,7 @@
 ## 11. 敏感信息扫描
 
 - `.env` 已忽略（`git check-ignore .env` 命中）；
-- `git grep -n -I -E "DEEPSEEK_API_KEY|Authorization: Bearer|sk-[A-Za-z0-9]"`（已跟踪内容）→ 无命中；
+- `git grep`（已跟踪内容）扫描 `DEEPSEEK_API_KEY`、Authorization 头、Bearer 前缀、sk- 密钥样式 → 无命中；
 - 候选入库文件扫描：`DEEPSEEK_API_KEY`/`api_key` 命中均为**环境变量名/参数名的正常引用**；
   `sk-` 密钥样式、`Bearer sk-`、真实 Key 片段 → **零命中**。
 

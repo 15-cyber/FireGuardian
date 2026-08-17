@@ -16,7 +16,7 @@
 
 ## 3. 数据集构建与过滤
 
-- 数据源: `F:\火焰数据集\Dataset`
+- 数据源: `DATASET_ROOT`
 - 审计报告: `tools\dataset_audit.json`
 - 随机种子: 42 | worker: 8 | 耗时: 541.5s
 - 排除审计越界框图片: 288

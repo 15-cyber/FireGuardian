@@ -47,7 +47,7 @@
 
 ## 权重获取与生成方式
 
-- 训练：`python tools/baseline_v1_train_entry.py`（使用 `F:\火焰数据集\Dataset` 构建的子集，yaml：`datasets/fire_smoke_baseline_v1.yaml`）。
+- 训练：`python tools/baseline_v1_train_entry.py`（使用 `DATASET_ROOT` 构建的子集，yaml：`datasets/fire_smoke_baseline_v1.yaml`）。
 - 晋升：`python tools/promote_model.py --candidate models/baseline_v1_best.pt --execute`（旧模型备份在 `models/best.backup_*.pt`）。
 - 版本记录：`models/model_versions.jsonl`（本地运行记录，不入库）。
 - **模型权重 `.pt` 不进入普通 Git**（已在 `.gitignore` 忽略）。

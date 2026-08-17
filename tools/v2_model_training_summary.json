@@ -1,9 +1,9 @@
 {
   "seed": 42,
   "dataset_yaml": "datasets/fire_smoke_v2_15k.yaml",
-  "best_path": "E:\\Codex项目\\FireGuardian\\models\\v2_15k_best.pt",
-  "best_target": "E:\\Codex项目\\FireGuardian\\models\\v2_15k_best.pt",
-  "last_target": "E:\\Codex项目\\FireGuardian\\models\\v2_15k_last.pt",
+  "best_path": "\models\\v2_15k_best.pt",
+  "best_target": "\models\\v2_15k_best.pt",
+  "last_target": "\models\\v2_15k_last.pt",
   "total_seconds": 17177.9,
   "epochs_run": 40,
   "early_stopped": false,
@@ -750,11 +750,11 @@
   ],
   "copies_sha256": [
     {
-      "file": "E:\\Codex项目\\FireGuardian\\models\\v2_15k_best.pt",
+      "file": "\models\\v2_15k_best.pt",
       "sha256": "9e674c156d8d638a0964a60de435f7b975d86ec56345f1245e6760ecf9fa9e55"
     },
     {
-      "file": "E:\\Codex项目\\FireGuardian\\models\\v2_15k_last.pt",
+      "file": "\models\\v2_15k_last.pt",
       "sha256": "9e674c156d8d638a0964a60de435f7b975d86ec56345f1245e6760ecf9fa9e55"
     }
   ],
