@@ -16,7 +16,7 @@ tools/ tests/ docs/ examples/ models/ .github/workflows/tests.yml
 | 项目 | 状态 |
 | --- | --- |
 | README | ✅ 第一屏 / 架构图 / 特色 / 结果 / Demo / 快速开始 / 限制 / My Contributions |
-| License | ✅ MIT（无第三方受限代码；数据集与权重不分发） |
+| License | ✅ CC BY-NC 4.0 非商业（无第三方受限代码；数据集与权重不分发） |
 | Security | ✅ SECURITY.md |
 | .env.example | ✅ 仅变量名，无真实 Key |
 | 不公开文件 | ✅ 模型 .pt / 视频 / 原始数据集 / 日志 / runs / 截图产物均未入库 |
