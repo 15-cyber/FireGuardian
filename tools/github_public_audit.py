@@ -42,7 +42,10 @@ SECRET_PATTERNS = [
 
 
 def _tracked() -> list:
-    return subprocess.check_output(["git", "ls-files"], text=True).splitlines()
+    return subprocess.check_output(
+        ["git", "-c", "core.quotepath=false", "ls-files"],
+        text=True, encoding="utf-8",
+    ).splitlines()
 
 
 def _scan(files, patterns):
@@ -69,6 +72,7 @@ def main() -> int:
     results["dotenv_all"] = [f for f in files if ".env" in f]
     results["pt_files"] = [f for f in files if f.endswith(".pt")]
     results["mp4_files"] = [f for f in files if f.endswith(".mp4")]
+    results["docx_files"] = [f for f in files if f.lower().endswith(".docx")]
     results["big_files"] = [
         (f, (_ROOT / f).stat().st_size)
         for f in files
@@ -88,7 +92,7 @@ def main() -> int:
                 out = subprocess.check_output(
                     ["git", "grep", "-n", "-I", "-E", pattern, rev, "--", ".",
                      ":(exclude)tools/github_public_audit.py"],
-                    text=True, stderr=subprocess.DEVNULL,
+                    text=True, encoding="utf-8", stderr=subprocess.DEVNULL,
                 )
             except subprocess.CalledProcessError:
                 continue
@@ -102,6 +106,7 @@ def main() -> int:
         and not results["env_files"]
         and not results["pt_files"]
         and not results["mp4_files"]
+        and not results["docx_files"]
         and not results["big_files"]
         and not results["abs_path_hits"]
         and not results["history_hits"]
@@ -120,6 +125,7 @@ def main() -> int:
     fmt(".env.example present", [] if ".env.example" in results["dotenv_all"] else [".env.example missing"])
     fmt("Model weights", results["pt_files"])
     fmt("Videos", results["mp4_files"])
+    fmt("Office docs (.docx)", results["docx_files"])
     fmt("Large files", results["big_files"])
     fmt("Absolute paths", results["abs_path_hits"])
     fmt("History secrets", results["history_hits"])
