@@ -3,12 +3,12 @@
 FireGuardian GitHub 公开版安全审计
 
 检查已跟踪文件：
-  - Secrets（sk- 密钥样式、Authorization: Bearer、password=）
+  - Secrets（sk- 密钥样式、Authorization 头 / Bearer 前缀、password=）
   - .env 是否仅 .env.example
   - 模型 .pt / 视频 .mp4 是否入库
   - 大文件（>1MB）
-  - 本机绝对路径（Codex 项目 / 火焰数据集 / C:\\Users / F:\\ 等）
-  - Git 历史中的密钥（sk-71f9 等真实 Key 片段）
+  - 本机绝对路径（Codex 项目 / 火焰 数据集 / C 盘用户目录 / F 盘等）
+  - Git 历史中的密钥（sk- 长密钥样式 / 环境变量赋值）
 
 用法：python tools/github_public_audit.py
 ============================================================
@@ -22,18 +22,20 @@ from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parent.parent
 
+_BS = chr(92)  # 反斜杠（运行时拼装，避免审计脚本自匹配）
 ABS_PATTERNS = [
-    "Codex项目",
-    "火焰数据集",
-    r"C:\\Users",
-    r"E:\\Codex",
-    r"D:\\Python",
-    r"F:\\", "F:/",
+    "Codex" + "\u9879\u76ee",                  # Codex 项目
+    "\u706b\u7130" + "\u6570\u636e\u96c6",     # 火焰 数据集
+    "C:" + _BS + _BS + "Users",
+    "E:" + _BS + _BS + "Codex",
+    "D:" + _BS + _BS + "Python",
+    "F:" + _BS + _BS,
+    "F" + ":/",
 ]
 
 SECRET_PATTERNS = [
     r"sk-[A-Za-z0-9]{16,}",
-    r"Authorization: Bearer",
+    "Authorization" + r": Bearer",
     r"Bearer [A-Za-z0-9]{20,}",
     r"password\s*=\s*['\"]?[A-Za-z0-9]{8,}",
 ]
@@ -74,19 +76,25 @@ def main() -> int:
     ]
     results["abs_path_hits"] = _scan(files, ABS_PATTERNS)
 
-    # Git 历史密钥（真实 Key 片段）
+    # Git 历史密钥（排除审计工具自身，避免自匹配）
     history_hits = []
-    for needle in ("sk-71f9", "DEEPSEEK_API_KEY="):
-        try:
-            out = subprocess.check_output(
-                ["git", "log", "--all", "--no-textconv", "--oneline", "-S", needle,
-                 "--", "*.py", "*.yaml", "*.md", "*.json", "*.jsonl"],
-                text=True, stderr=subprocess.DEVNULL,
-            )
-        except subprocess.CalledProcessError:
-            out = ""
-        if out.strip():
-            history_hits.append((needle, out.strip().splitlines()))
+    try:
+        revs = subprocess.check_output(["git", "rev-list", "--all"], text=True).splitlines()
+    except subprocess.CalledProcessError:
+        revs = []
+    for pattern in (r"sk-[A-Za-z0-9]{24,}", r"DEEPSEEK_API_KEY=.+"):
+        for rev in revs:
+            try:
+                out = subprocess.check_output(
+                    ["git", "grep", "-n", "-I", "-E", pattern, rev, "--", ".",
+                     ":(exclude)tools/github_public_audit.py"],
+                    text=True, stderr=subprocess.DEVNULL,
+                )
+            except subprocess.CalledProcessError:
+                continue
+            if out.strip():
+                history_hits.append((pattern, out.strip().splitlines()[:3]))
+                break
     results["history_hits"] = history_hits
 
     ok = (
