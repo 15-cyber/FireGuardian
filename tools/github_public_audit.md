@@ -14,7 +14,7 @@
 | Model weights | PASS（无 `.pt` 入库） |
 | Videos | PASS（无 `.mp4` 入库） |
 | Large files | PASS（无 >1MB 文件入库） |
-| Absolute paths | PASS（无 `Codex项目` / `火焰数据集` / 盘符路径 / 用户目录） |
+| Absolute paths | PASS（无本机项目目录名 / 数据集目录名 / 盘符路径 / 用户目录） |
 | History secrets | PASS（全历史 `git grep` 排除审计工具后无密钥） |
 
 ## 处理记录
