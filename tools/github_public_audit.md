@@ -23,6 +23,9 @@
 - 巨型生成报告（`smoke_subset_report.*`、`smoke_e2e_verify_result.json`）已从公开树移除；
 - `config/config.yaml`、`datasets/fire.yaml` 及 19 个工具/报告/文档中的本机绝对路径已替换为占位符；
 - 审计脚本中的扫描模式采用运行时拼装，避免自匹配误报。
+- 移除 12 个已跟踪的 docx（`项目计划书.docx` 与 1~11 号任务书），本地文件保留；
+- 清理研发技术总结报告中的数据集路径字样并重建 PDF；
+- 审计脚本修复中文路径解码并新增 docx 检查。
 
 ## 说明
 

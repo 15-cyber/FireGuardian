@@ -40,6 +40,12 @@ SECRET_PATTERNS = [
     r"password\s*=\s*['\"]?[A-Za-z0-9]{8,}",
 ]
 
+BINARY_EXTS = {
+    ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp",
+    ".pdf", ".pt", ".mp4", ".avi", ".mov", ".zip", ".gz",
+    ".docx", ".doc", ".xlsx", ".pptx", ".pyc", ".exe", ".dll",
+}
+
 
 def _tracked() -> list:
     return subprocess.check_output(
@@ -52,6 +58,8 @@ def _scan(files, patterns):
     hits = []
     for f in files:
         path = _ROOT / f
+        if Path(f).suffix.lower() in BINARY_EXTS:
+            continue
         try:
             text = path.read_text(encoding="utf-8", errors="ignore")
         except OSError:
