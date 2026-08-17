@@ -108,6 +108,18 @@ Agent 失败不影响 YOLO → M6 → M7 基础链路，也不阻塞 GUI / 报�
 
 ![FireGuardian GUI](docs/assets/fireguardian_gui.png)
 
+## 项目展示
+
+![过程1](docs/assets/showcase_process_1.png)
+
+![过程2](docs/assets/showcase_process_2.png)
+
+![模型结果](docs/assets/showcase_model_result.png)
+
+![agent分析结果](docs/assets/showcase_agent_analysis.png)
+
+![报告](docs/assets/showcase_report.png)
+
 ## 测试
 
 - Automated tests: **186/186 passed**（全部 Mock / 离线，不消耗真实 API）；
@@ -216,4 +228,6 @@ config/       配置文件（config.yaml / llm_agent.yaml）
 
 ## License
 
-本项目以 [MIT License](LICENSE) 开源。项目依赖的第三方开源库见 `requirements.txt`，本项目不声称拥有这些库的源代码版权。
+本项目原创代码版权归项目作者所有，并以 MIT License 授权。项目依赖的第三方开源组件分别遵循其各自许可证，相关依赖及许可证信息见 `requirements.txt`。
+
+> 本项目仅用于学习、研究与个人求职展示，不得用于任何商业用途。

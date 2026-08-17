@@ -80,6 +80,7 @@ datasets/v2_negatives/
 /*.docx
 /*.mp4
 /测试视频/
+/展示照片/
 /火堆.jpg
 /bus.jpg
 tools/baseline_v1_visual_audit.pdf
